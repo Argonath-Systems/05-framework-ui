@@ -95,6 +95,7 @@ public class UnifiedUIManager {
     public void saveLayout(UUID playerId, HudLayoutConfig config) {
         if (accessor == null) throw new IllegalStateException("UnifiedUIManager not initialized with Accessor");
         
+        // Persist to disk via HudLayoutManager (uses JsonFileRepository internally)
         HudLayoutManager.getInstance().setLayout(playerId, config);
         
         // Serialize and sync to client (adapter handles the actual application of coords)
@@ -102,7 +103,5 @@ public class UnifiedUIManager {
         Map<String, Object> serialized = serializer.serialize(config);
         
         accessor.updateHudLayout(playerId, serialized);
-        
-        // TODO: Persist to disk via Core Lib Config
     }
 }
