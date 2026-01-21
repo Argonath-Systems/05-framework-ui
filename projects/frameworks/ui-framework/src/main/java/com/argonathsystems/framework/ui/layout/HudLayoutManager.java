@@ -45,4 +45,22 @@ public class HudLayoutManager {
         layouts.put(playerId, configWithId);
         repository.save(configWithId);
     }
+
+    /**
+     * Reset a player's HUD layout to the default configuration.
+     * @param playerId The player whose layout to reset
+     */
+    public void resetToDefault(UUID playerId) {
+        // Create a fresh default config with no custom element positions
+        HudLayoutConfig defaultConfig = new HudLayoutConfig(playerId, Map.of());
+        layouts.put(playerId, defaultConfig);
+        repository.save(defaultConfig);
+    }
+
+    /**
+     * Remove a player's layout from memory (e.g., on disconnect).
+     */
+    public void unloadLayout(UUID playerId) {
+        layouts.remove(playerId);
+    }
 }

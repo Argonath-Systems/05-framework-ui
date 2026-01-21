@@ -25,7 +25,13 @@
             <groupId>com.argonathsystems.framework</groupId>
             <artifactId>accessor-api</artifactId>
             <version>1.0.0-SNAPSHOT</version>
-        </dependency>        <dependency>
+        </dependency>
+        <dependency>
+            <groupId>com.argonathsystems.framework</groupId>
+            <artifactId>command-framework</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>com.argonathsystems.framework</groupId>
             <artifactId>storage-lib</artifactId>
             <version>1.0.0-SNAPSHOT</version>

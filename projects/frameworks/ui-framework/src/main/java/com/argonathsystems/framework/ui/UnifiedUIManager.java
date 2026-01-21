@@ -7,17 +7,22 @@ import com.argonathsystems.framework.ui.layout.HudLayoutSerializer;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Platform-agnostic manager for the Unified UI System.
- * Handles app registration and navigation logic.
+ * Handles app registration, navigation logic, and HUD edit mode management.
  */
 public class UnifiedUIManager {
     private static final UnifiedUIManager INSTANCE = new UnifiedUIManager();
     private final Map<String, AppManifest> apps = new ConcurrentHashMap<>();
+    private final Set<UUID> playersInEditMode = ConcurrentHashMap.newKeySet();
     private UIAccessor accessor;
+
+    /** Default keybind for HUD edit toggle */
+    public static final String DEFAULT_EDIT_KEYBIND = "KEY_F7";
 
     private UnifiedUIManager() {}
 
@@ -77,7 +82,7 @@ public class UnifiedUIManager {
         // Load persistency
         HudLayoutManager.getInstance().loadLayout(playerId);
         
-        // Add the shortcut helper
+        // Add the shortcut helper (shows F7 keybind hint)
         accessor.addHud(playerId, "shortcut_helper", "resource:/ui/hud_shortcut_helper.xaml");
     }
 
@@ -85,8 +90,94 @@ public class UnifiedUIManager {
      * Enter HUD Edit mode.
      */
     public void enterEditMode(UUID playerId) {
-         if (accessor == null) throw new IllegalStateException("UnifiedUIManager not initialized with Accessor");
-         accessor.openHudEditor(playerId);
+        if (accessor == null) throw new IllegalStateException("UnifiedUIManager not initialized with Accessor");
+        if (playersInEditMode.contains(playerId)) return; // Already in edit mode
+        
+        playersInEditMode.add(playerId);
+        accessor.openHudEditor(playerId);
+    }
+
+    /**
+     * Exit HUD Edit mode.
+     */
+    public void exitEditMode(UUID playerId) {
+        if (accessor == null) throw new IllegalStateException("UnifiedUIManager not initialized with Accessor");
+        if (!playersInEditMode.contains(playerId)) return; // Not in edit mode
+        
+        playersInEditMode.remove(playerId);
+        accessor.closeHudEditor(playerId);
+    }
+
+    /**
+     * Toggle HUD Edit mode on/off.
+     */
+    public void toggleEditMode(UUID playerId) {
+        if (isInEditMode(playerId)) {
+            exitEditMode(playerId);
+        } else {
+            enterEditMode(playerId);
+        }
+    }
+
+    /**
+     * Check if a player is currently in HUD edit mode.
+     * @param playerId The player to check
+     * @return true if in edit mode
+     */
+    public boolean isInEditMode(UUID playerId) {
+        return playersInEditMode.contains(playerId);
+    }
+
+    /**
+     * Handle keybind press for HUD editing.
+     * Should be called from event listener on key press.
+     * 
+     * @param playerId The player who pressed the key
+     * @param key The key that was pressed (e.g., "KEY_F7")
+     * @return true if the key was handled
+     */
+    public boolean handleKeyPress(UUID playerId, String key) {
+        if (DEFAULT_EDIT_KEYBIND.equals(key)) {
+            toggleEditMode(playerId);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Reset HUD layout to defaults for a player.
+     */
+    public void resetLayout(UUID playerId) {
+        if (accessor == null) throw new IllegalStateException("UnifiedUIManager not initialized with Accessor");
+        
+        HudLayoutManager.getInstance().resetToDefault(playerId);
+        
+        // Sync reset layout to client
+        HudLayoutConfig defaultConfig = HudLayoutManager.getInstance().getLayout(playerId);
+        if (defaultConfig != null) {
+            HudLayoutSerializer serializer = new HudLayoutSerializer();
+            Map<String, Object> serialized = serializer.serialize(defaultConfig);
+            accessor.updateHudLayout(playerId, serialized);
+        }
+    }
+
+    /**
+     * Force save the current HUD layout.
+     */
+    public void forceSaveLayout(UUID playerId) {
+        if (accessor == null) throw new IllegalStateException("UnifiedUIManager not initialized with Accessor");
+        
+        HudLayoutConfig config = HudLayoutManager.getInstance().getLayout(playerId);
+        if (config != null) {
+            HudLayoutManager.getInstance().setLayout(playerId, config);
+        }
+    }
+
+    /**
+     * Called when a player disconnects to clean up state.
+     */
+    public void onPlayerQuit(UUID playerId) {
+        playersInEditMode.remove(playerId);
     }
     
     /**
