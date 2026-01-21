@@ -1,6 +1,9 @@
 package com.argonathsystems.framework.ui;
 
 import com.argonathsystems.framework.accessorapi.UIAccessor;
+import com.argonathsystems.framework.ui.layout.HudLayoutConfig;
+import com.argonathsystems.framework.ui.layout.HudLayoutManager;
+import com.argonathsystems.framework.ui.layout.HudLayoutSerializer;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -62,5 +65,44 @@ public class UnifiedUIManager {
         if (app != null) {
             accessor.openUI(playerId, app.entryScreenId(), null);
         }
+    }
+
+    /**
+     * Initialize the HUD for a player.
+     * Should be called on player join.
+     */
+    public void initializeHud(UUID playerId) {
+        if (accessor == null) return;
+        
+        // Load persistency
+        HudLayoutManager.getInstance().loadLayout(playerId);
+        
+        // Add the shortcut helper
+        accessor.addHud(playerId, "shortcut_helper", "resource:/ui/hud_shortcut_helper.xaml");
+    }
+
+    /**
+     * Enter HUD Edit mode.
+     */
+    public void enterEditMode(UUID playerId) {
+         if (accessor == null) throw new IllegalStateException("UnifiedUIManager not initialized with Accessor");
+         accessor.openHudEditor(playerId);
+    }
+    
+    /**
+     * Save a new HUD layout.
+     */
+    public void saveLayout(UUID playerId, HudLayoutConfig config) {
+        if (accessor == null) throw new IllegalStateException("UnifiedUIManager not initialized with Accessor");
+        
+        HudLayoutManager.getInstance().setLayout(playerId, config);
+        
+        // Serialize and sync to client (adapter handles the actual application of coords)
+        HudLayoutSerializer serializer = new HudLayoutSerializer();
+        Map<String, Object> serialized = serializer.serialize(config);
+        
+        accessor.updateHudLayout(playerId, serialized);
+        
+        // TODO: Persist to disk via Core Lib Config
     }
 }

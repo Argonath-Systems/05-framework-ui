@@ -27,18 +27,30 @@ public class HudLayoutSerializer implements ConfigSerializer<HudLayoutConfig> {
             }
         }
         
-        return new HudLayoutConfig(elements);
+        // Note: UUID is not typically in the config section for layout, 
+        // but we default to null or read it if present.
+        // This method works for config-lib usages.
+        return new HudLayoutConfig(null, elements);
     }
 
     @Override
-    public void serialize(HudLayoutConfig object, ConfigSection config) {
-        ConfigSection elementsSection = config.createSection("elements"); // Assuming createSection exists or similar
+    public Map<String, Object> serialize(HudLayoutConfig object) {
+        Map<String, Object> root = new HashMap<>();
+        Map<String, Object> elementsMap = new HashMap<>();
         
-        // If createSection doesn't exist in interface I might need to cast or use a setter.
-        // Checking ConfigSection interface again... 
-        // The spec didn't show setters. It only showed getters.
-        // But usually Config abstractions have setters. 
-        // I will assume standard Bukkit/Hytale like config or Map based.
-        // Let's check ConfigSection.java content to be safe.
+        for (Map.Entry<String, HudElementPosition> entry : object.elements().entrySet()) {
+            HudElementPosition pos = entry.getValue();
+            Map<String, Object> elData = new HashMap<>();
+            elData.put("x", pos.x());
+            elData.put("y", pos.y());
+            elData.put("anchor", pos.anchor());
+            elData.put("scale", pos.scale());
+            elData.put("visible", pos.visible());
+            
+            elementsMap.put(entry.getKey(), elData);
+        }
+        
+        root.put("elements", elementsMap);
+        return root;
     }
 }
