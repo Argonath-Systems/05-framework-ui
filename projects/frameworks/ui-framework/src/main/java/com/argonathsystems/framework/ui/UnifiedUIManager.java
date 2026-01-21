@@ -1,6 +1,7 @@
 package com.argonathsystems.framework.ui;
 
 import com.argonathsystems.framework.accessorapi.UIAccessor;
+import com.argonathsystems.framework.ui.hud.KeybindHintsHUD;
 import com.argonathsystems.framework.ui.layout.HudLayoutConfig;
 import com.argonathsystems.framework.ui.layout.HudLayoutManager;
 import com.argonathsystems.framework.ui.layout.HudLayoutSerializer;
@@ -84,6 +85,10 @@ public class UnifiedUIManager {
         
         // Add the shortcut helper (shows F7 keybind hint)
         accessor.addHud(playerId, "shortcut_helper", "resource:/ui/hud_shortcut_helper.xaml");
+        
+        // Add keybind hints HUD (bottom-left corner)
+        String keybindHintsHyuiml = KeybindHintsHUD.getInstance().generateHyuiml();
+        accessor.addHud(playerId, "keybind_hints", keybindHintsHyuiml);
     }
 
     /**
@@ -194,5 +199,44 @@ public class UnifiedUIManager {
         Map<String, Object> serialized = serializer.serialize(config);
         
         accessor.updateHudLayout(playerId, serialized);
+    }
+    
+    /**
+     * Refresh the keybind hints HUD for a player.
+     * Call this after adding/removing contextual hints.
+     * 
+     * @param playerId The player to refresh hints for
+     */
+    public void refreshKeybindHints(UUID playerId) {
+        if (accessor == null) return;
+        
+        String keybindHintsHyuiml = KeybindHintsHUD.getInstance().generateHyuiml();
+        accessor.updateHud(playerId, "keybind_hints", keybindHintsHyuiml);
+    }
+    
+    /**
+     * Set a contextual keybind hint (e.g., "Press E to interact").
+     * The hint will be displayed at the top of the keybind hints HUD.
+     * 
+     * @param playerId The player to show the hint to
+     * @param hintId Unique identifier for this hint
+     * @param key The key to display (e.g., "E", "F")
+     * @param action The action description (e.g., "Interact", "Talk")
+     */
+    public void setContextualHint(UUID playerId, String hintId, String key, String action) {
+        KeybindHintsHUD.getInstance().setContextualHint(hintId, 
+            KeybindHintsHUD.KeybindHint.interaction(key, action));
+        refreshKeybindHints(playerId);
+    }
+    
+    /**
+     * Remove a contextual keybind hint.
+     * 
+     * @param playerId The player to remove the hint from
+     * @param hintId The identifier of the hint to remove
+     */
+    public void removeContextualHint(UUID playerId, String hintId) {
+        KeybindHintsHUD.getInstance().removeContextualHint(hintId);
+        refreshKeybindHints(playerId);
     }
 }
