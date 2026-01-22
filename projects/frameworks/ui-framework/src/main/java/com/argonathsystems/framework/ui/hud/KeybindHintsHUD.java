@@ -49,13 +49,19 @@ public class KeybindHintsHUD {
      * Initialize default keybind hints that are always visible.
      */
     private void initializeDefaultHints() {
-        // Menu keybinds
-        addPersistentHint(new KeybindHint("M", "Map", "menu", 10));
-        addPersistentHint(new KeybindHint("I", "Inventory", "menu", 20));
-        addPersistentHint(new KeybindHint("J", "Quests", "menu", 30));
-        addPersistentHint(new KeybindHint("K", "Skills", "menu", 40));
-        addPersistentHint(new KeybindHint("G", "Guild", "menu", 50));
-        addPersistentHint(new KeybindHint("P", "Party", "menu", 60));
+        // Main menu keybind (highest priority)
+        addPersistentHint(new KeybindHint("TAB", "Main Menu", "menu", 1));
+        
+        // Direct tab keybinds
+        addPersistentHint(new KeybindHint("C", "Character", "menu", 10));
+        addPersistentHint(new KeybindHint("I", "Inventory", "menu", 11));
+        addPersistentHint(new KeybindHint("K", "Skills", "menu", 12));
+        addPersistentHint(new KeybindHint("J", "Quests", "menu", 13));
+        addPersistentHint(new KeybindHint("G", "Guild", "menu", 20));
+        addPersistentHint(new KeybindHint("P", "Party", "menu", 21));
+        addPersistentHint(new KeybindHint("O", "Social", "menu", 22));
+        addPersistentHint(new KeybindHint("M", "Map", "menu", 30));
+        addPersistentHint(new KeybindHint("B", "Marketplace", "menu", 31));
     }
     
     /**

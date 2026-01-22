@@ -5,6 +5,8 @@ import com.argonathsystems.framework.ui.hud.KeybindHintsHUD;
 import com.argonathsystems.framework.ui.layout.HudLayoutConfig;
 import com.argonathsystems.framework.ui.layout.HudLayoutManager;
 import com.argonathsystems.framework.ui.layout.HudLayoutSerializer;
+import com.argonathsystems.framework.ui.menu.MainMenuManager;
+import com.argonathsystems.framework.ui.menu.MenuTab;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -15,6 +17,8 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Platform-agnostic manager for the Unified UI System.
  * Handles app registration, navigation logic, and HUD edit mode management.
+ * 
+ * <p>Key handling is delegated to {@link MainMenuManager} for menu-related keys.
  */
 public class UnifiedUIManager {
     private static final UnifiedUIManager INSTANCE = new UnifiedUIManager();
@@ -33,6 +37,8 @@ public class UnifiedUIManager {
 
     public void init(UIAccessor accessor) {
         this.accessor = accessor;
+        // Initialize the main menu manager with the same accessor
+        MainMenuManager.getInstance().init(accessor);
     }
 
     /**
@@ -52,13 +58,36 @@ public class UnifiedUIManager {
     }
 
     /**
-     * Opens the Main Dashboard for a player.
+     * Opens the Main Menu for a player.
+     * @param playerId The player to show the menu to
      */
+    public void openMainMenu(UUID playerId) {
+        MainMenuManager.getInstance().openMenu(playerId, null);
+    }
+    
+    /**
+     * Opens the Main Menu to a specific tab.
+     * @param playerId The player to show the menu to
+     * @param tab The tab to open to
+     */
+    public void openMainMenu(UUID playerId, MenuTab tab) {
+        MainMenuManager.getInstance().openMenu(playerId, tab);
+    }
+    
+    /**
+     * Close the main menu.
+     */
+    public void closeMainMenu(UUID playerId) {
+        MainMenuManager.getInstance().closeMenu(playerId);
+    }
+
+    /**
+     * Opens the Main Dashboard for a player.
+     * @deprecated Use {@link #openMainMenu(UUID)} instead
+     */
+    @Deprecated
     public void openDashboard(UUID playerId) {
-        if (accessor == null) throw new IllegalStateException("UnifiedUIManager not initialized with Accessor");
-        
-        // Pass the list of apps as context so the UI can render the grid
-        accessor.openUI(playerId, "unified_dashboard", apps.values());
+        openMainMenu(playerId);
     }
 
     /**
@@ -134,19 +163,28 @@ public class UnifiedUIManager {
     }
 
     /**
-     * Handle keybind press for HUD editing.
+     * Handle keybind press for HUD editing and menu navigation.
      * Should be called from event listener on key press.
      * 
      * @param playerId The player who pressed the key
-     * @param key The key that was pressed (e.g., "KEY_F7")
+     * @param key The key that was pressed (e.g., "KEY_F7", "G", "M")
      * @return true if the key was handled
      */
     public boolean handleKeyPress(UUID playerId, String key) {
+        // Check for HUD edit toggle first
         if (DEFAULT_EDIT_KEYBIND.equals(key)) {
             toggleEditMode(playerId);
             return true;
         }
-        return false;
+        
+        // Delegate to MainMenuManager for menu-related keys
+        // Extract just the key letter if it's in KEY_X format
+        String keyLetter = key;
+        if (key != null && key.startsWith("KEY_")) {
+            keyLetter = key.substring(4);
+        }
+        
+        return MainMenuManager.getInstance().handleKeyPress(playerId, keyLetter);
     }
 
     /**
@@ -183,6 +221,7 @@ public class UnifiedUIManager {
      */
     public void onPlayerQuit(UUID playerId) {
         playersInEditMode.remove(playerId);
+        MainMenuManager.getInstance().onPlayerQuit(playerId);
     }
     
     /**
