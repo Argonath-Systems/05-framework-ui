@@ -28,7 +28,7 @@
         </dependency>
         <dependency>
             <groupId>com.argonathsystems.framework</groupId>
-            <artifactId>command-framework</artifactId>
+            <artifactId>argonath-palantir-command</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
