@@ -6,24 +6,24 @@
 
     <parent>
         <groupId>com.argonathsystems</groupId>
-        <artifactId>argonathsystems-parent</artifactId>
+        <artifactId>argonath-mithril-forge-core</artifactId>
         <version>1.0.0-SNAPSHOT</version>
-        <relativePath>../../parent-pom/pom.xml</relativePath>
+        <relativePath>../01-platform-core/pom.xml</relativePath>
     </parent>
 
     <groupId>com.argonathsystems.framework</groupId>
-    <artifactId>ui-framework</artifactId>
+    <artifactId>argonath-rivendell-ui</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
             <groupId>com.argonathsystems.framework</groupId>
-            <artifactId>core-lib</artifactId>
+            <artifactId>argonath-bag-end-core</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.argonathsystems.framework</groupId>
-            <artifactId>accessor-api</artifactId>
+            <artifactId>argonath-grey-havens-accessor</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -33,7 +33,7 @@
         </dependency>
         <dependency>
             <groupId>com.argonathsystems.framework</groupId>
-            <artifactId>storage-lib</artifactId>
+            <artifactId>argonath-erebor-storage</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
