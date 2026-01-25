@@ -1,60 +1,57 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<?xml version='1.0' encoding='UTF-8'?>
+<ns0:project xmlns:ns0="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <ns0:modelVersion>4.0.0</ns0:modelVersion>
 
-    <parent>
-        <groupId>com.argonathsystems</groupId>
-        <artifactId>argonathsystems-parent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
-        <relativePath>../../parent-pom/pom.xml</relativePath>
-    </parent>
+    <ns0:parent>
+        <ns0:groupId>com.argonathsystems</ns0:groupId>
+        <ns0:artifactId>argonathsystems-parent</ns0:artifactId>
+        <ns0:version>1.0.0-SNAPSHOT</ns0:version>
+        </ns0:parent>
 
-    <groupId>com.argonathsystems.framework</groupId>
-    <artifactId>ui-framework</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <ns0:groupId>com.argonathsystems.framework</ns0:groupId>
+    <ns0:artifactId>ui-framework</ns0:artifactId>
+    <ns0:version>1.0.0-SNAPSHOT</ns0:version>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.argonathsystems.framework</groupId>
-            <artifactId>core-lib</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.argonathsystems.framework</groupId>
-            <artifactId>accessor-api</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.argonathsystems.framework</groupId>
-            <artifactId>command-framework</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.argonathsystems.framework</groupId>
-            <artifactId>storage-lib</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
+    <ns0:dependencies>
+        <ns0:dependency>
+            <ns0:groupId>com.argonathsystems.framework</ns0:groupId>
+            <ns0:artifactId>core-lib</ns0:artifactId>
+            <ns0:version>1.0.0-SNAPSHOT</ns0:version>
+        </ns0:dependency>
+        <ns0:dependency>
+            <ns0:groupId>com.argonathsystems.framework</ns0:groupId>
+            <ns0:artifactId>accessor-api</ns0:artifactId>
+            <ns0:version>1.0.0-SNAPSHOT</ns0:version>
+        </ns0:dependency>
+        <ns0:dependency>
+            <ns0:groupId>com.argonathsystems.framework</ns0:groupId>
+            <ns0:artifactId>command-framework</ns0:artifactId>
+            <ns0:version>1.0.0-SNAPSHOT</ns0:version>
+        </ns0:dependency>
+        <ns0:dependency>
+            <ns0:groupId>com.argonathsystems.framework</ns0:groupId>
+            <ns0:artifactId>storage-lib</ns0:artifactId>
+            <ns0:version>1.0.0-SNAPSHOT</ns0:version>
+        </ns0:dependency>
 
-        <!-- Hytale SDK (for plugin entry point only) -->
-        <dependency>
-            <groupId>com.hypixel.hytale</groupId>
-            <artifactId>HytaleServer-parent</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
+        
+        <ns0:dependency>
+            <ns0:groupId>com.hypixel.hytale</ns0:groupId>
+            <ns0:artifactId>HytaleServer-parent</ns0:artifactId>
+            <ns0:version>1.0-SNAPSHOT</ns0:version>
+            <ns0:scope>provided</ns0:scope>
+        </ns0:dependency>
 
-        <!-- Test Dependencies -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-</project>
+        
+        <ns0:dependency>
+            <ns0:groupId>org.junit.jupiter</ns0:groupId>
+            <ns0:artifactId>junit-jupiter</ns0:artifactId>
+            <ns0:scope>test</ns0:scope>
+        </ns0:dependency>
+        <ns0:dependency>
+            <ns0:groupId>org.mockito</ns0:groupId>
+            <ns0:artifactId>mockito-core</ns0:artifactId>
+            <ns0:scope>test</ns0:scope>
+        </ns0:dependency>
+    </ns0:dependencies>
+</ns0:project>
