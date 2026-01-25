@@ -4,6 +4,7 @@ import com.argonathsystems.framework.ui.layout.HudLayoutManager;
 import com.argonathsystems.framework.ui.menu.MainMenuManager;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
+import java.util.logging.Logger;
 
 /**
  * Hytale plugin entry point for the UI Framework.
@@ -12,7 +13,7 @@ import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
  * UI systems when loaded by the Hytale server.</p>
  */
 public class UiFrameworkPlugin extends JavaPlugin {
-    
+    private static final Logger LOGGER = Logger.getLogger(UiFrameworkPlugin.class.getName());
     private static UiFrameworkPlugin instance;
     
     public UiFrameworkPlugin(JavaPluginInit init) {
@@ -24,21 +25,19 @@ public class UiFrameworkPlugin extends JavaPlugin {
         return instance;
     }
     
-    @Override
-    protected void setup() {
-        getLogger().info("Initializing UI Framework...");
+    public void setup() {
+        LOGGER.info("Initializing UI Framework...");
         
         // HudLayoutManager and MainMenuManager are singletons
         // They are accessed via their getInstance() methods
-        getLogger().info("UI Framework - HudLayoutManager available.");
-        getLogger().info("UI Framework - MainMenuManager available.");
+        LOGGER.info("UI Framework - HudLayoutManager available.");
+        LOGGER.info("UI Framework - MainMenuManager available.");
         
-        getLogger().info("UI Framework initialized successfully.");
+        LOGGER.info("UI Framework initialized successfully.");
     }
     
-    @Override
-    protected void shutdown() {
-        getLogger().info("Shutting down UI Framework...");
+    public void shutdown() {
+        LOGGER.info("Shutting down UI Framework...");
     }
     
     /**
