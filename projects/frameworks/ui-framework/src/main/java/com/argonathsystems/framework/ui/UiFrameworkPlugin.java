@@ -26,19 +26,19 @@ public class UiFrameworkPlugin extends JavaPlugin {
     
     @Override
     protected void setup() {
-        getLogger().atInfo().log("Initializing UI Framework...");
+        getLogger().info("Initializing UI Framework...");
         
         // HudLayoutManager and MainMenuManager are singletons
         // They are accessed via their getInstance() methods
-        getLogger().atInfo().log("UI Framework - HudLayoutManager available.");
-        getLogger().atInfo().log("UI Framework - MainMenuManager available.");
+        getLogger().info("UI Framework - HudLayoutManager available.");
+        getLogger().info("UI Framework - MainMenuManager available.");
         
-        getLogger().atInfo().log("UI Framework initialized successfully.");
+        getLogger().info("UI Framework initialized successfully.");
     }
     
     @Override
     protected void shutdown() {
-        getLogger().atInfo().log("Shutting down UI Framework...");
+        getLogger().info("Shutting down UI Framework...");
     }
     
     /**
