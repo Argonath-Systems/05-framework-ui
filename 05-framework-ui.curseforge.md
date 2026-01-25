@@ -67,7 +67,7 @@ dependencies {
 
 ## 🏷️ Tags
 
-`ui interface pages modals hud components` `library` `framework` `hytale` `lord-of-the-tales` `argonath-systems`
+`ui interface pages modals hud components` `library` `framework` `hytale` `argonath` `argonath-systems`
 
 ## 🔗 Dependencies
 
