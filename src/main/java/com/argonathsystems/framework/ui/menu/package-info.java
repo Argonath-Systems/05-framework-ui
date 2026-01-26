@@ -1,5 +1,5 @@
 /**
- * Main Menu system for Lord of the Tales.
+ * Main Menu system for Argonath Systems.
  * 
  * <p>This package provides:
  * <ul>

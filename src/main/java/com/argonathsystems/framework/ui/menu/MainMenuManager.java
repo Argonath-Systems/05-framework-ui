@@ -448,7 +448,7 @@ public class MainMenuManager {
     private String generateHeader() {
         return """
             <div class="menu-header">
-                <p class="menu-title">LORD OF THE TALES</p>
+                <p class="menu-title">ARGONATH SYSTEMS</p>
                 <div style="flex-grow: 1;"></div>
                 <button id="menu-close" class="menu-close" onclick="closeMenu">×</button>
             </div>
