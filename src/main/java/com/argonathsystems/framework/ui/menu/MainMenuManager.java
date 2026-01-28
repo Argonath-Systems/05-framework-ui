@@ -174,7 +174,7 @@ public class MainMenuManager {
         
         // Generate menu UI
         String menuHtml = generateMenuHtml(playerId, targetTab);
-        accessor.openUI(playerId, "main_menu", menuHtml);
+        accessor.openUI(playerId, "main_menu", new MenuUIContext(menuHtml));
         
         // Notify listeners
         notifyTabOpened(playerId, targetTab);
@@ -218,7 +218,7 @@ public class MainMenuManager {
         
         // Refresh UI
         String menuHtml = generateMenuHtml(playerId, newTab);
-        accessor.openUI(playerId, "main_menu", menuHtml);
+        accessor.openUI(playerId, "main_menu", new MenuUIContext(menuHtml));
         
         // Notify open of new tab
         notifyTabOpened(playerId, newTab);
