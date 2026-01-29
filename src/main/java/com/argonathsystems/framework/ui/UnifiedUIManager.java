@@ -149,6 +149,17 @@ public class UnifiedUIManager {
     }
     
     /**
+     * Get the hot reload service if available.
+     * 
+     * <p>Use this to register custom reload listeners or access advanced features.
+     * 
+     * @return Optional containing the hot reload service, or empty if not enabled
+     */
+    public Optional<UIHotReloadService> getHotReloadService() {
+        return Optional.ofNullable(hotReloadService);
+    }
+    
+    /**
      * Create a content supplier for dynamic UI loading.
      * 
      * <p>In development mode (hot reload enabled), the supplier reads

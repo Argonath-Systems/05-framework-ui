@@ -1,0 +1,150 @@
+<!--
+    Compass Bar HUD Template - HYUIML
+    ==================================
+    
+    Skyrim-style horizontal compass with directional markers and quest POIs.
+    
+    Template Variables:
+      {{$playerHeading}}  - Player rotation (0-360)
+      {{$markers}}        - Quest/POI markers
+    
+    Command to reload:
+      /uireload compass-bar
+    
+    Author: Argonath Systems
+    Version: 1.0.0
+    Spec: VDD-MISC-009-world-001-compass.md
+-->
+
+<style>
+    .hud-compass-bar {
+        layout-mode: Center;
+        anchor-top: 10;
+        anchor-width: 600;
+        anchor-height: 40;
+    }
+    
+    .compass-container {
+        anchor-width: 100%;
+        anchor-height: 30;
+        background-color: rgba(45, 36, 30, 0.85);
+        /* Overflow not supported - compass will scroll full width */
+    }
+    
+    .compass-strip {
+        layout-mode: Left;
+        anchor-height: 100%;
+        /* Position handled by layout, transform not supported */
+    }
+    
+    .direction-marker {
+        layout-mode: Center;
+        anchor-width: 60;
+        anchor-height: 30;
+    }
+    
+    .direction-text {
+        font-size: 16;
+        font-weight: bold;
+        color: #d4a017;
+    }
+    
+    .direction-text[data-cardinal="true"] {
+        font-size: 18;
+        color: #f4e8d0;
+    }
+    
+    .compass-markers {
+        layout-mode: Left;
+        anchor-width: 100%;
+        anchor-height: 100%;
+    }
+    
+    .quest-marker {
+        layout-mode: Top;
+        anchor-width: 24;
+        anchor-height: 24;
+    }
+    
+    .quest-marker[data-type="main"] {
+        color: #ffd700;
+    }
+    
+    .quest-marker[data-type="side"] {
+        color: #ffffff;
+    }
+    
+    .quest-marker[data-type="poi"] {
+        color: #a89885;
+    }
+    
+    .marker-distance {
+        font-size: 9;
+        color: #f4e8d0;
+    }
+    
+    .compass-center {
+        anchor-width: 2;
+        anchor-height: 100%;
+        background-color: #d4a017;
+    }
+</style>
+
+<div class="hud-compass-bar">
+    <div class="compass-container">
+        <!-- Direction Strip -->
+        <div class="compass-strip">
+            <!-- Note: Transform not supported - compass rotation will need alternative approach -->
+            <!-- N -->
+            <div class="direction-marker">
+                <p class="direction-text" data-cardinal="true">N</p>
+            </div>
+            <!-- NE -->
+            <div class="direction-marker">
+                <p class="direction-text">NE</p>
+            </div>
+            <!-- E -->
+            <div class="direction-marker">
+                <p class="direction-text" data-cardinal="true">E</p>
+            </div>
+            <!-- SE -->
+            <div class="direction-marker">
+                <p class="direction-text">SE</p>
+            </div>
+            <!-- S -->
+            <div class="direction-marker">
+                <p class="direction-text" data-cardinal="true">S</p>
+            </div>
+            <!-- SW -->
+            <div class="direction-marker">
+                <p class="direction-text">SW</p>
+            </div>
+            <!-- W -->
+            <div class="direction-marker">
+                <p class="direction-text" data-cardinal="true">W</p>
+            </div>
+            <!-- NW -->
+            <div class="direction-marker">
+                <p class="direction-text">NW</p>
+            </div>
+            <!-- Loop back to N -->
+            <div class="direction-marker">
+                <p class="direction-text" data-cardinal="true">N</p>
+            </div>
+        </div>
+        
+        <!-- Quest/POI Markers -->
+        <div class="compass-markers">
+            {{#each markers}}
+            <div class="quest-marker" 
+                 data-type="{{$type}}">
+                <p style="font-size: 18;">⬇</p>
+                <p class="marker-distance">{{$distance}}m</p>
+            </div>
+            {{/each}}
+        </div>
+        
+        <!-- Center Line -->
+        <div class="compass-center"></div>
+    </div>
+</div>

@@ -1,0 +1,140 @@
+<!--
+    Action Bar HUD Template - HYUIML
+    =================================
+    
+    Bottom-center action bar with 12 ability slots and resource bars.
+    
+    Template Variables:
+      {{$slots}}         - Array of 12 action slots
+      {{$playerStats}}   - Health, mana, energy stats
+    
+    Command to reload:
+      /uireload action-bar
+    
+    Author: Argonath Systems
+    Version: 1.0.0
+    Spec: VDD-MISC-001-combat-001-action-bar.md
+-->
+
+<style>
+    .hud-action-bar {
+        layout-mode: Center;
+        anchor-bottom: 20;
+        anchor-width: 600;
+        /* Transform not supported - using layout-mode: Center instead */
+    }
+    
+    /* Resource Bars */
+    .resource-bars {
+        layout-mode: Left;
+        anchor-width: 600;
+    }
+    
+    .resource-bar-container {
+        layout-mode: Top;
+        flex-weight: 1;
+    }
+    
+    .resource-bar {
+        anchor-height: 20;
+        background-color: rgba(0, 0, 0, 0.6);
+    }
+    
+    .resource-fill {
+        anchor-height: 100%;
+        /* Position handled by layout-mode */
+    }
+    
+    .resource-fill[data-type="health"] {
+        background-color: #dc143c;
+    }
+    
+    .resource-fill[data-type="mana"] {
+        background-color: #4169e1;
+    }
+    
+    .resource-text {
+        font-size: 11;
+        color: #ffffff;
+        /* Text-shadow not supported */
+    }
+    
+    /* Action Slots */
+    .action-slots {
+        layout-mode: Left;
+    }
+    
+    .action-slot {
+        anchor-width: 46;
+        anchor-height: 46;
+        background-color: rgba(0, 0, 0, 0.7);
+        /* Hover handled by data-hyui-*-bg if needed */
+    }
+    
+    .slot-icon {
+        anchor-width: 100%;
+        anchor-height: 100%;
+    }
+    
+    .slot-keybind {
+        font-size: 10;
+        color: #f4e8d0;
+        /* Position handled by layout */
+    }
+    
+    .slot-cooldown {
+        anchor-width: 100%;
+        anchor-height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+    }
+    
+    .cooldown-text {
+        font-size: 14;
+        font-weight: bold;
+        color: #ffffff;
+        /* Transform not supported - centered via layout */
+    }
+</style>
+
+<div class="hud-action-bar">
+    <!-- Resource Bars -->
+    <div class="resource-bars">
+        <div class="resource-bar-container">
+            <div class="resource-bar">
+                <div class="resource-fill" 
+                     data-type="health" 
+                     style="anchor-width: {{$playerStats.healthPercent}}%;"></div>
+                <p class="resource-text">{{$playerStats.health}} / {{$playerStats.maxHealth}}</p>
+            </div>
+        </div>
+        
+        <div class="resource-bar-container">
+            <div class="resource-bar">
+                <div class="resource-fill" 
+                     data-type="mana" 
+                     style="anchor-width: {{$playerStats.manaPercent}}%;"></div>
+                <p class="resource-text">{{$playerStats.mana}} / {{$playerStats.maxMana}}</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Action Slots -->
+    <div class="action-slots">
+        {{#each slots}}
+        <div class="action-slot" data-slot-id="{{$slotId}}">
+            {{#if hasAbility}}
+            <img src="{{$iconUrl}}" class="slot-icon" alt="{{$abilityName}}">
+            <p class="slot-keybind">{{$keybind}}</p>
+            
+            {{#if onCooldown}}
+            <div class="slot-cooldown">
+                <p class="cooldown-text">{{$cooldownRemaining}}</p>
+            </div>
+            {{/if}}
+            {{else}}
+            <p class="slot-keybind">{{$keybind}}</p>
+            {{/if}}
+        </div>
+        {{/each}}
+    </div>
+</div>

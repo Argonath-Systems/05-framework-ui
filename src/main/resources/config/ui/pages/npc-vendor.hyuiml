@@ -1,0 +1,278 @@
+<!--
+    NPC Vendor Page Template - HYUIML
+    ==================================
+    
+    Full-screen vendor interface with Buy/Sell/Buyback tabs.
+    
+    Template Variables:
+      {{$activeTab}}      - "buy", "sell", or "buyback"
+      {{$vendorName}}     - NPC vendor name
+      {{$items}}          - Items for sale or buyback
+      {{$playerGold}}     - Player's current gold
+      {{$playerInventory}}    - Player items (sell tab)
+    
+    Command to reload:
+      /uireload npc-vendor
+    
+    Author: Argonath Systems
+    Version: 1.0.0
+    Spec: VDD-LAYOUT-006-npc-vendor.md
+-->
+
+<style>
+    .page-vendor {
+        layout-mode: Center;
+        anchor-width: 850;
+        anchor-height: 600;
+        background-color: rgba(45, 36, 30, 0.98);
+    }
+    
+    .vendor-container {
+        layout-mode: Top;
+        flex-weight: 1;
+    }
+    
+    /* Header */
+    .vendor-header {
+        layout-mode: Left;
+        anchor-height: 40;
+    }
+    
+    .vendor-title {
+        font-size: 20;
+        font-weight: bold;
+        color: #d4a017;
+        flex-weight: 1;
+    }
+    
+    .player-gold {
+        font-size: 16;
+        color: #ffd700;
+        font-weight: bold;
+    }
+    
+    /* Tab Navigation */
+    .vendor-tabs {
+        layout-mode: Left;
+    }
+    
+    .vendor-tab {
+        anchor-width: 100;
+        anchor-height: 36;
+        font-size: 14;
+        font-weight: bold;
+        color: #a89885;
+        /* Hover handled by data-hyui-*-bg attributes */
+    }
+    
+    .vendor-tab[data-active="true"] {
+        background-color: rgba(212, 160, 23, 0.3);
+        color: #f4e8d0;
+    }
+    
+    /* Item Grid */
+    .vendor-content {
+        layout-mode: Top;
+        flex-weight: 1;
+    }
+    
+    .item-grid {
+        layout-mode: Left;
+        background-color: rgba(0, 0, 0, 0.2);
+        /* Flex-wrap not supported - use multiple rows if needed */
+    }
+    
+    .vendor-item {
+        layout-mode: Top;
+        anchor-width: 120;
+        anchor-height: 140;
+        background-color: rgba(244, 232, 208, 0.05);
+        /* Hover handled by data-hyui-*-bg attributes */
+    }
+    
+    .vendor-item[data-selected="true"] {
+        background-color: rgba(212, 160, 23, 0.3);
+    }
+    
+    .item-icon {
+        anchor-width: 48;
+        anchor-height: 48;
+    }
+    
+    .item-name {
+        font-size: 12;
+        color: #f4e8d0;
+        font-weight: bold;
+    }
+    
+    .item-price {
+        font-size: 11;
+        color: #ffd700;
+    }
+    
+    .item-stock {
+        font-size: 9;
+        color: #a89885;
+    }
+    
+    /* Transaction Panel */
+    .transaction-panel {
+        layout-mode: Left;
+        anchor-height: 100;
+        background-color: rgba(0, 0, 0, 0.3);
+    }
+    
+    .selected-item-info {
+        layout-mode: Left;
+        flex-weight: 1;
+    }
+    
+    .selected-item-icon {
+        anchor-width: 64;
+        anchor-height: 64;
+    }
+    
+    .selected-item-details {
+        layout-mode: Top;
+        flex-weight: 1;
+    }
+    
+    .selected-item-name {
+        font-size: 16;
+        font-weight: bold;
+        color: #d4a017;
+    }
+    
+    .selected-item-description {
+        font-size: 11;
+        color: #f4e8d0;
+    }
+    
+    .transaction-controls {
+        layout-mode: Left;
+    }
+    
+    .quantity-selector {
+        layout-mode: Left;
+    }
+    
+    .quantity-button {
+        anchor-width: 24;
+        anchor-height: 24;
+        background-color: rgba(212, 160, 23, 0.2);
+    }
+    
+    .quantity-input {
+        anchor-width: 60;
+        anchor-height: 24;
+        background-color: rgba(0, 0, 0, 0.4);
+        color: #f4e8d0;
+    }
+    
+    .total-price {
+        font-size: 16;
+        color: #ffd700;
+        font-weight: bold;
+    }
+    
+    .transaction-actions {
+        layout-mode: Left;
+    }
+</style>
+
+<div class="page-vendor">
+    <div class="vendor-container">
+        <!-- Header -->
+        <div class="vendor-header">
+            <p class="vendor-title">🏪 {{$vendorName}}</p>
+            <p class="player-gold">💰 {{$playerGold}}g</p>
+        </div>
+        
+        <!-- Tabs -->
+        <div class="vendor-tabs">
+            <button id="tab-buy" 
+                    class="custom-textbutton vendor-tab"
+                    data-hyui-normal-bg="rgba(212, 196, 168, 0.1)"
+                    data-hyui-hover-bg="rgba(212, 160, 23, 0.2)"
+                    data-hyui-pressed-bg="rgba(212, 160, 23, 0.3)"
+                    {{#if (eq activeTab "buy")}}data-active="true"{{/if}}>
+                Buy
+            </button>
+            <button id="tab-sell" 
+                    class="custom-textbutton vendor-tab"
+                    data-hyui-normal-bg="rgba(212, 196, 168, 0.1)"
+                    data-hyui-hover-bg="rgba(212, 160, 23, 0.2)"
+                    data-hyui-pressed-bg="rgba(212, 160, 23, 0.3)"
+                    {{#if (eq activeTab "sell")}}data-active="true"{{/if}}>
+                Sell
+            </button>
+            <button id="tab-buyback" 
+                    class="custom-textbutton vendor-tab"
+                    data-hyui-normal-bg="rgba(212, 196, 168, 0.1)"
+                    data-hyui-hover-bg="rgba(212, 160, 23, 0.2)"
+                    data-hyui-pressed-bg="rgba(212, 160, 23, 0.3)"
+                    {{#if (eq activeTab "buyback")}}data-active="true"{{/if}}>
+                Buyback
+            </button>
+        </div>
+        
+        <!-- Content -->
+        <div class="vendor-content">
+            <!-- Item Grid -->
+            <div class="item-grid">
+                {{#each items}}
+                <div class="vendor-item" 
+                     data-item-id="{{$id}}"
+                     {{#if (eq id selectedItem.id)}}data-selected="true"{{/if}}>
+                    <img src="{{$iconUrl}}" class="item-icon" alt="{{$name}}">
+                    <p class="item-name">{{$name}}</p>
+                    <p class="item-price">{{$price}}g</p>
+                    {{#if stock}}
+                    <p class="item-stock">Stock: {{$stock}}</p>
+                    {{/if}}
+                </div>
+                {{/each}}
+            </div>
+            
+            <!-- Transaction Panel -->
+            {{#if selectedItem}}
+            <div class="transaction-panel">
+                <div class="selected-item-info">
+                    <img src="{{$selectedItem.iconUrl}}" class="selected-item-icon" alt="{{$selectedItem.name}}">
+                    
+                    <div class="selected-item-details">
+                        <p class="selected-item-name">{{$selectedItem.name}}</p>
+                        <p class="selected-item-description">{{$selectedItem.description}}</p>
+                    </div>
+                </div>
+                
+                <div class="transaction-controls">
+                    <div class="quantity-selector">
+                        <button id="btn-quantity-down" class="custom-button quantity-button">-</button>
+                        <input id="input-quantity" 
+                               class="quantity-input" 
+                               type="number" 
+                               value="{{$quantity}}" 
+                               min="1">
+                        <button id="btn-quantity-up" class="custom-button quantity-button">+</button>
+                    </div>
+                    
+                    <p class="total-price">Total: {{$totalPrice}}g</p>
+                    
+                    <div class="transaction-actions">
+                        {{#if (eq activeTab "buy")}}
+                        <button id="btn-buy" class="tertiary-button">Buy</button>
+                        {{/if}}
+                        {{#if (eq activeTab "sell")}}
+                        <button id="btn-sell" class="tertiary-button">Sell</button>
+                        {{/if}}
+                        {{#if (eq activeTab "buyback")}}
+                        <button id="btn-buyback" class="tertiary-button">Buyback</button>
+                        {{/if}}
+                    </div>
+                </div>
+            </div>
+            {{/if}}
+        </div>
+    </div>
+</div>

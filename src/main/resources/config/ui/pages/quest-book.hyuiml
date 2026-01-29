@@ -1,0 +1,396 @@
+<!--
+    Quest Book Page Template - HYUIML
+    ==================================
+    
+    Full-screen quest journal with Active/Complete/Failed tabs and quest management.
+    
+    Template Variables:
+      {{$activeTab}}        - Current tab: "active", "complete", or "failed"
+      {{$quests}}           - Array of quests for current tab
+      {{$selectedQuest}}    - Currently selected quest details
+      {{$categories}}       - Quest categories for filtering
+    
+    Command to reload:
+      /uireload quest-book
+    
+    Author: Argonath Systems
+    Version: 1.0.0
+    Spec: VDD-MISC-024-quest-002-quest-book.md
+-->
+
+<style>
+    /* === Quest Book Page Styles (LOTR Theme) === */
+    
+    .page-quest-book {
+        layout-mode: Center;
+        anchor-width: 750;
+        anchor-height: 550;
+        background-color: rgba(45, 36, 30, 0.98);
+        /* Border removed - HyUI doesn't support border property */
+    }
+    
+    .quest-book-container {
+        layout-mode: Top;
+        flex-weight: 1;
+        /* Padding removed - use nested containers for spacing */
+    }
+    
+    /* Header */
+    .quest-book-header {
+        layout-mode: Left;
+        /* Spacing handled by container structure */
+    }
+    
+    .quest-book-title {
+        font-size: 24;
+        font-weight: bold;
+        color: #d4a017;
+        text-transform: uppercase;
+        flex-weight: 1;
+    }
+    
+    .close-button {
+        anchor-width: 30;
+        anchor-height: 30;
+        background-color: rgba(212, 160, 23, 0.2);
+    }
+    
+    /* Tab Navigation */
+    .tab-navigation {
+        layout-mode: Left;
+        /* Gap/spacing handled by container structure */
+    }
+    
+    .quest-tab {
+        anchor-width: 120;
+        anchor-height: 36;
+        font-size: 14;
+        font-weight: bold;
+        color: #a89885;
+        /* Hover state handled by data-hyui-*-bg attributes in HTML */
+    }
+    
+    .quest-tab[data-active="true"] {
+        background-color: rgba(212, 160, 23, 0.3);
+        color: #f4e8d0;
+    }
+    
+    /* Content Layout */
+    .quest-book-content {
+        layout-mode: Left;
+        flex-weight: 1;
+    }
+    
+    /* Sidebar (Quest List) */
+    .quest-sidebar {
+        layout-mode: Top;
+        anchor-width: 280;
+    }
+    
+    .category-section {
+        layout-mode: Top;
+    }
+    
+    .category-header {
+        layout-mode: Left;
+        anchor-height: 28;
+        background-color: rgba(0, 0, 0, 0.3);
+    }
+    
+    .category-name {
+        font-size: 13;
+        font-weight: bold;
+        color: #d4a017;
+        text-transform: uppercase;
+        flex-weight: 1;
+    }
+    
+    .category-count {
+        font-size: 11;
+        color: #a89885;
+    }
+    
+    .quest-list {
+        layout-mode: Top;
+    }
+    
+    .quest-list-item {
+        layout-mode: Left;
+        anchor-height: 48;
+        background-color: rgba(244, 232, 208, 0.05);
+        /* Hover handled by data-hyui-*-bg attributes */
+    }
+    
+    .quest-list-item[data-selected="true"] {
+        background-color: rgba(212, 160, 23, 0.3);
+    }
+    
+    .quest-icon {
+        anchor-width: 24;
+        anchor-height: 24;
+    }
+    
+    .quest-list-text {
+        layout-mode: Top;
+        flex-weight: 1;
+    }
+    
+    .quest-list-name {
+        font-size: 13;
+        color: #f4e8d0;
+        font-weight: bold;
+    }
+    
+    .quest-list-level {
+        font-size: 10;
+        color: #a89885;
+    }
+    
+    /* Detail Panel */
+    .quest-detail-panel {
+        layout-mode: Top;
+        flex-weight: 1;
+        background-color: rgba(0, 0, 0, 0.2);
+    }
+    
+    .detail-header {
+        layout-mode: Top;
+    }
+    
+    .detail-quest-name {
+        font-size: 20;
+        font-weight: bold;
+        color: #d4a017;
+    }
+    
+    .detail-quest-info {
+        layout-mode: Left;
+    }
+    
+    .detail-info-item {
+        font-size: 11;
+        color: #a89885;
+    }
+    
+    .detail-description {
+        layout-mode: Top;
+    }
+    
+    .detail-description-text {
+        font-size: 13;
+        color: #f4e8d0;
+    }
+    
+    .objectives-section {
+        layout-mode: Top;
+    }
+    
+    .section-label {
+        font-size: 14;
+        font-weight: bold;
+        color: #d4a017;
+        text-transform: uppercase;
+    }
+    
+    .objective-item {
+        layout-mode: Left;
+        anchor-height: 28;
+        background-color: rgba(0, 0, 0, 0.2);
+    }
+    
+    .objective-checkbox {
+        anchor-width: 16;
+        anchor-height: 16;
+        background-color: rgba(107, 93, 79, 0.3);
+    }
+    
+    .objective-checkbox[data-completed="true"] {
+        background-color: #90ee90;
+    }
+    
+    .objective-text {
+        font-size: 12;
+        color: #f4e8d0;
+        flex-weight: 1;
+    }
+    
+    .objective-text[data-completed="true"] {
+        color: #a89885;
+        /* Text-decoration not supported - use opacity or color change */
+    }
+    
+    .objective-progress {
+        font-size: 11;
+        color: #d4a017;
+        font-weight: bold;
+    }
+    
+    .rewards-section {
+        layout-mode: Top;
+    }
+    
+    .reward-grid {
+        layout-mode: Left;
+        /* Flex-wrap not supported - use multiple rows if needed */
+    }
+    
+    .quest-actions {
+        layout-mode: Right;
+    }
+    
+    /* Empty State */
+    .empty-state {
+        layout-mode: Center;
+        flex-weight: 1;
+        text-align: center;
+    }
+    
+    .empty-state-text {
+        font-size: 16;
+        color: #a89885;
+        font-style: italic;
+    }
+</style>
+
+<div class="page-quest-book">
+    <div class="quest-book-container">
+        <!-- Header -->
+        <div class="quest-book-header">
+            <p class="quest-book-title">📜 Quest Journal</p>
+            <button id="btn-close" class="custom-button close-button">✕</button>
+        </div>
+        
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button id="tab-active" 
+                    class="custom-textbutton quest-tab"
+                    data-hyui-normal-bg="rgba(212, 196, 168, 0.1)"
+                    data-hyui-hover-bg="rgba(212, 160, 23, 0.2)"
+                    data-hyui-pressed-bg="rgba(212, 160, 23, 0.3)"
+                    {{#if (eq activeTab "active")}}data-active="true"{{/if}}>
+                Active
+            </button>
+            <button id="tab-complete" 
+                    class="custom-textbutton quest-tab"
+                    data-hyui-normal-bg="rgba(212, 196, 168, 0.1)"
+                    data-hyui-hover-bg="rgba(212, 160, 23, 0.2)"
+                    data-hyui-pressed-bg="rgba(212, 160, 23, 0.3)"
+                    {{#if (eq activeTab "complete")}}data-active="true"{{/if}}>
+                Complete
+            </button>
+            <button id="tab-failed" 
+                    class="custom-textbutton quest-tab"
+                    data-hyui-normal-bg="rgba(212, 196, 168, 0.1)"
+                    data-hyui-hover-bg="rgba(212, 160, 23, 0.2)"
+                    data-hyui-pressed-bg="rgba(212, 160, 23, 0.3)"
+                    {{#if (eq activeTab "failed")}}data-active="true"{{/if}}>
+                Failed
+            </button>
+        </div>
+        
+        <!-- Content -->
+        <div class="quest-book-content">
+            <!-- Sidebar: Quest List -->
+            <div class="quest-sidebar">
+                {{#each categories}}
+                <div class="category-section">
+                    <div class="category-header">
+                        <p class="category-name">{{$name}}</p>
+                        <p class="category-count">({{$count}})</p>
+                    </div>
+                    
+                    <div class="quest-list">
+                        {{#each quests}}
+                        <button id="quest-{{$id}}" 
+                                class="custom-textbutton quest-list-item"
+                                data-quest-id="{{$id}}"
+                                data-hyui-normal-bg="rgba(244, 232, 208, 0.05)"
+                                data-hyui-hover-bg="rgba(212, 160, 23, 0.15)"
+                                data-hyui-pressed-bg="rgba(212, 160, 23, 0.25)"
+                                {{#if (eq id selectedQuest.id)}}data-selected="true"{{/if}}>
+                            <img src="{{$iconUrl}}" class="quest-icon" alt="Quest">
+                            <div class="quest-list-text">
+                                <p class="quest-list-name">{{$name}}</p>
+                                <p class="quest-list-level">Level {{$level}} • {{$type}}</p>
+                            </div>
+                        </button>
+                        {{/each}}
+                    </div>
+                </div>
+                {{/each}}
+                
+                {{#if (isEmpty categories)}}
+                <div class="empty-state">
+                    <p class="empty-state-text">No quests in this category</p>
+                </div>
+                {{/if}}
+            </div>
+            
+            <!-- Detail Panel -->
+            {{#if selectedQuest}}
+            <div class="quest-detail-panel">
+                <div class="detail-header">
+                    <p class="detail-quest-name">{{$selectedQuest.name}}</p>
+                    <div class="detail-quest-info">
+                        <span class="detail-info-item">Level {{$selectedQuest.level}}</span>
+                        <span class="detail-info-item">{{$selectedQuest.type}}</span>
+                        <span class="detail-info-item">{{$selectedQuest.giver}}</span>
+                    </div>
+                </div>
+                
+                <div class="detail-description">
+                    <p class="detail-description-text">{{$selectedQuest.description}}</p>
+                </div>
+                
+                <div class="objectives-section">
+                    <p class="section-label">Objectives</p>
+                    {{#each selectedQuest.objectives}}
+                    <div class="objective-item">
+                        <div class="objective-checkbox" {{#if completed}}data-completed="true"{{/if}}></div>
+                        <p class="objective-text" {{#if completed}}data-completed="true"{{/if}}>{{$text}}</p>
+                        {{#if progress}}
+                        <p class="objective-progress">{{$progress.current}}/{{$progress.required}}</p>
+                        {{/if}}
+                    </div>
+                    {{/each}}
+                </div>
+                
+                {{#if selectedQuest.rewards}}
+                <div class="rewards-section">
+                    <p class="section-label">Rewards</p>
+                    <div class="reward-grid">
+                        {{#each selectedQuest.rewards}}
+                        <span class="item-slot" 
+                              data-hyui-item-id="{{$itemId}}"
+                              style="anchor-width: 40; anchor-height: 40;"
+                              data-hyui-tooltiptext="{{$name}} x{{$quantity}}">
+                        </span>
+                        {{/each}}
+                        {{#if selectedQuest.xpReward}}
+                        <p class="reward-xp">+{{$selectedQuest.xpReward}} XP</p>
+                        {{/if}}
+                        {{#if selectedQuest.goldReward}}
+                        <p class="reward-gold">+{{$selectedQuest.goldReward}}g</p>
+                        {{/if}}
+                    </div>
+                </div>
+                {{/if}}
+                
+                <div class="quest-actions">
+                    {{#if (eq activeTab "active")}}
+                    <button id="btn-abandon" class="secondary-button">Abandon Quest</button>
+                    <button id="btn-untrack" class="secondary-button">Untrack</button>
+                    <button id="btn-track" class="tertiary-button">Track Quest</button>
+                    {{/if}}
+                </div>
+            </div>
+            {{else}}
+            <div class="quest-detail-panel">
+                <div class="empty-state">
+                    <p class="empty-state-text">Select a quest to view details</p>
+                </div>
+            </div>
+            {{/if}}
+        </div>
+    </div>
+</div>

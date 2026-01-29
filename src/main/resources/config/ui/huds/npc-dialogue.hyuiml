@@ -1,0 +1,292 @@
+<!--
+    NPC Dialogue HUD Template - HYUIML
+    ==================================
+    
+    Bottom-center modal dialogue window for NPC conversations with quest integration.
+    
+    Template Variables:
+      {{$npc.name}}         - NPC display name
+      {{$npc.avatarId}}     - Hyvatar username for portrait
+      {{$currentText}}      - Current dialogue text
+      {{$choices}}          - Array of dialogue options
+      {{$showQuestOffer}}   - Boolean: show quest offer mode
+      {{$quest}}            - Quest offer details (if showQuestOffer)
+    
+    Command to reload:
+      /uireload npc-dialogue
+    
+    Author: Argonath Systems
+    Version: 1.0.0
+    Spec: VDD-MISC-005-quest-001-npc-dialogue.md
+-->
+
+<style>
+    /* === NPC Dialogue HUD Styles (LOTR Theme) === */
+    
+    .hud-npc-dialogue {
+        layout-mode: Top;
+        anchor-bottom: 50;
+        anchor-left: 50%;
+        anchor-width: 700;
+        anchor-height: 300;
+        background-color: rgba(45, 36, 30, 0.95);
+        /* Note: HyUI does not support transform, border, padding, or box-shadow */
+        /* Centering must be handled via anchor positioning */
+    }
+    
+    .dialogue-container {
+        layout-mode: Left;
+        /* Note: Use row-gap/column-gap for HyUI 0.6.0+ */
+        flex-weight: 1;
+    }
+    
+    /* NPC Portrait Section */
+    .npc-portrait {
+        layout-mode: Top;
+        anchor-width: 100;
+    }
+    
+    .portrait-image {
+        anchor-width: 80;
+        anchor-height: 100;
+        /* Note: HyUI does not support border or border-radius */
+    }
+    
+    /* Dialogue Content */
+    .dialogue-content {
+        layout-mode: Top;
+        flex-weight: 1;
+    }
+    
+    .npc-header {
+        /* Note: padding not supported in HyUI CSS */
+    }
+    
+    .npc-name {
+        font-size: 18;
+        font-weight: bold;
+        color: #d4a017;
+        text-transform: uppercase;
+        /* Note: letter-spacing only supported in custom button label styles */
+    }
+    
+    .dialogue-text {
+        background-color: rgba(0, 0, 0, 0.2);
+        /* Note: min-height may be supported in HyUI 0.6.0+ */
+        min-height: 60;
+    }
+    
+    .speech-text {
+        font-size: 14;
+        color: #f4e8d0;
+        /* Note: line-height not supported */
+    }
+    
+    .dialogue-divider {
+        background-color: #6b5d4f;
+        anchor-height: 1;
+        /* Note: Use background-color for visual dividers, border not supported */
+    }
+    
+    /* Dialogue Choices */
+    .dialogue-choices {
+        layout-mode: Top;
+    }
+    
+    .dialogue-choice {
+        layout-mode: Left;
+        anchor-height: 28;
+        /* Note: State-based styling moved to data-hyui-*-bg attributes on button elements */
+    }
+    
+    .choice-number {
+        color: #d4a017;
+        font-weight: bold;
+        font-size: 13;
+    }
+    
+    .choice-text {
+        color: #f4e8d0;
+        font-size: 13;
+        flex-weight: 1;
+    }
+    
+    .choice-type {
+        color: #a89885;
+        font-size: 11;
+        /* Note: font-style not in standard CSS mapping, needs data-hyui-style */
+    }
+    
+    /* Quest Offer Section */
+    .quest-offer {
+        layout-mode: Top;
+        background-color: rgba(0, 0, 0, 0.3);
+    }
+    
+    .quest-title {
+        font-size: 16;
+        font-weight: bold;
+        color: #d4a017;
+        text-transform: uppercase;
+    }
+    
+    .quest-objectives {
+        layout-mode: Top;
+        padding-left: 16;
+        gap: 4;
+    }
+    
+    .quest-objective-item {
+        font-size: 13;
+        color: #f4e8d0;
+    }
+    
+    .rewards-section {
+        layout-mode: Top;
+        gap: 6;
+        padding-top: 8;
+    }
+    
+    .rewards-label {
+        font-weight: bold;
+        color: #f4e8d0;
+        font-size: 13;
+        text-transform: uppercase;
+    }
+    
+    .reward-items {
+        layout-mode: Left;
+        gap: 8;
+        align-items: center;
+    }
+    
+    .reward-xp {
+        color: #90ee90;
+        font-size: 13;
+        font-weight: bold;
+    }
+    
+    .reward-gold {
+        color: #d4a017;
+        font-size: 13;
+        font-weight: bold;
+    }
+    
+    .quest-actions {
+        layout-mode: Right;
+        gap: 8;
+        margin-top: 8;
+    }
+    
+    /* Footer */
+    .dialogue-footer {
+        layout-mode: Right;
+        padding-top: 4;
+    }
+    
+    .close-hint {
+        font-size: 10;
+        color: #a89885;
+        font-style: italic;
+    }
+    
+    /* Disabled state */
+    .dialogue-choice[data-disabled="true"] {
+        opacity: 0.5;
+    }
+    
+    .dialogue-choice[data-disabled="true"] .choice-text {
+        color: #888888;
+        text-decoration: line-through;
+    }
+</style>
+
+<div class="hud-npc-dialogue">
+    <div class="dialogue-container">
+        <!-- NPC Portrait Section -->
+        <div class="npc-portrait">
+            <hyvatar id="npc-avatar" 
+                     src="{{$npc.avatarId}}" 
+                     data-hyui-render-type="head" 
+                     data-hyui-size="128" 
+                     class="portrait-image">
+            </hyvatar>
+        </div>
+        
+        <!-- Dialogue Content Section -->
+        <div class="dialogue-content">
+            <!-- NPC Header -->
+            <div class="npc-header">
+                <p id="npc-name" class="npc-name">{{$npc.name}}</p>
+            </div>
+            
+            <!-- Dialogue Text -->
+            <div class="dialogue-text">
+                <p id="speech-text" class="speech-text">{{$currentText}}</p>
+            </div>
+            
+            <div class="dialogue-divider"></div>
+            
+            {{#if showQuestOffer}}
+            <!-- Quest Offer Mode -->
+            <div class="quest-offer">
+                <p class="quest-title">📜 QUEST: {{$quest.name}}</p>
+                
+                <div class="quest-objectives">
+                    {{#each quest.objectives}}
+                    <p class="quest-objective-item">• {{$text}}</p>
+                    {{/each}}
+                </div>
+                
+                <div class="rewards-section">
+                    <p class="rewards-label">REWARDS:</p>
+                    <div class="reward-items">
+                        {{#each quest.rewards}}
+                        <span class="item-slot" 
+                              data-hyui-item-id="{{$itemId}}"
+                              style="anchor-width: 32; anchor-height: 32;"
+                              data-hyui-tooltiptext="{{$name}} x{{$quantity}}">
+                        </span>
+                        {{/each}}
+                        {{#if quest.xpReward}}
+                        <p class="reward-xp">+{{$quest.xpReward}} XP</p>
+                        {{/if}}
+                        {{#if quest.goldReward}}
+                        <p class="reward-gold">+{{$quest.goldReward}}g</p>
+                        {{/if}}
+                    </div>
+                </div>
+                
+                <div class="quest-actions">
+                    <button id="btn-decline" class="secondary-button">Decline</button>
+                    <button id="btn-accept" class="tertiary-button">Accept Quest</button>
+                </div>
+            </div>
+            {{else}}
+            <!-- Normal Dialogue Choices -->
+            <div id="choices-container" class="dialogue-choices">
+                {{#each choices}}
+                <button id="choice-{{$id}}" 
+                        class="custom-textbutton dialogue-choice"
+                        data-choice-id="{{$id}}"
+                        {{#if !available}}data-disabled="true"{{/if}}
+                        data-hyui-default-label-style="color: #f4e8d0;"
+                        data-hyui-hovered-label-style="color: #ffffff; font-weight: bold;"
+                        data-hyui-disabled-label-style="color: #888888;">
+                    <span class="choice-number">[{{$index}}]</span>
+                    <span class="choice-text">{{$text}}</span>
+                    {{#if type}}
+                    <span class="choice-type">({{$type}})</span>
+                    {{/if}}
+                </button>
+                {{/each}}
+            </div>
+            {{/if}}
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <div class="dialogue-footer">
+        <p class="close-hint">[ESC to close]</p>
+    </div>
+</div>

@@ -1,0 +1,239 @@
+/**
+ * LOTR Theme Constants - Shared CSS Variables
+ * ===========================================
+ * 
+ * Extracted from VDD-MISC-002-lotr-theme.md for reuse across all UI components.
+ * Import this file in all HyUIML templates to maintain consistent theming.
+ * 
+ * Usage in HyUIML:
+ *   <import href="lotr-theme.css"/>
+ * 
+ * Author: Argonath Systems
+ * Version: 1.0.0
+ * Spec: VDD-MISC-002-lotr-theme.md
+ */
+
+:root {
+    /* === Color Palette === */
+    
+    /* Primary Colors */
+    --lotr-parchment: #f4e8d0;           /* Main background (parchment) */
+    --lotr-gold: #d4a017;                /* Accents, highlights, borders */
+    --lotr-dark-brown: #2d241e;          /* Dark backgrounds, shadows */
+    --lotr-brown: #6b5d4f;               /* Secondary borders, dividers */
+    --lotr-light-brown: #a89885;         /* Disabled text, subtle elements */
+    --lotr-ink: #2d241e;                 /* Primary text color */
+    
+    /* Functional Colors */
+    --lotr-health: #dc143c;              /* Health bars */
+    --lotr-mana: #4169e1;                /* Mana bars */
+    --lotr-energy: #ffa500;              /* Energy, stamina */
+    --lotr-xp: #90ee90;                  /* Experience, completed objectives */
+    --lotr-warning: #ff6347;             /* Warnings, errors */
+    --lotr-success: #32cd32;             /* Success messages */
+    
+    /* Quest Type Colors */
+    --lotr-quest-main: #ffd700;          /* Main story quests */
+    --lotr-quest-side: #ffffff;          /* Side quests */
+    --lotr-quest-daily: #87ceeb;         /* Daily quests */
+    --lotr-quest-weekly: #9370db;        /* Weekly quests */
+    --lotr-quest-guild: #ff8c00;         /* Guild quests */
+    --lotr-quest-timed: #ff4500;         /* Timed events */
+    --lotr-quest-event: #da70d6;         /* Special events */
+    
+    /* Transparency Levels */
+    --lotr-overlay-light: rgba(45, 36, 30, 0.85);
+    --lotr-overlay-medium: rgba(45, 36, 30, 0.90);
+    --lotr-overlay-heavy: rgba(45, 36, 30, 0.95);
+    --lotr-overlay-full: rgba(45, 36, 30, 0.98);
+    
+    --lotr-highlight-light: rgba(212, 160, 23, 0.1);
+    --lotr-highlight-medium: rgba(212, 160, 23, 0.2);
+    --lotr-highlight-strong: rgba(212, 160, 23, 0.3);
+    
+    /* === Typography === */
+    
+    /* Font Families */
+    --lotr-font-primary: 'Aniron', serif;           /* Headings, titles */
+    --lotr-font-secondary: 'Ringbearer', serif;     /* Body text */
+    --lotr-font-tengwar: 'Tengwar Annatar', serif;  /* Decorative Elvish */
+    
+    /* Font Sizes */
+    --lotr-font-size-huge: 24px;         /* Page titles */
+    --lotr-font-size-large: 20px;        /* Section headers */
+    --lotr-font-size-medium: 16px;       /* Subheaders */
+    --lotr-font-size-normal: 14px;       /* Body text */
+    --lotr-font-size-small: 12px;        /* Secondary info */
+    --lotr-font-size-tiny: 10px;         /* Hints, footnotes */
+    
+    /* === Spacing === */
+    
+    --lotr-spacing-xs: 4px;
+    --lotr-spacing-sm: 8px;
+    --lotr-spacing-md: 12px;
+    --lotr-spacing-lg: 16px;
+    --lotr-spacing-xl: 20px;
+    --lotr-spacing-xxl: 24px;
+    
+    /* === Border Radius === */
+    
+    --lotr-radius-small: 3px;
+    --lotr-radius-medium: 4px;
+    --lotr-radius-large: 6px;
+    
+    /* === Shadows === */
+    
+    --lotr-shadow-small: 0 2px 4px rgba(29, 22, 18, 0.3);
+    --lotr-shadow-medium: 0 10px 20px rgba(29, 22, 18, 0.5);
+    --lotr-shadow-large: 0 15px 30px rgba(29, 22, 18, 0.6);
+    --lotr-shadow-huge: 0 20px 40px rgba(0, 0, 0, 0.7);
+    
+    --lotr-text-shadow: 1px 1px 2px #000000;
+    
+    /* === Animation Timings === */
+    
+    --lotr-transition-fast: 0.15s;
+    --lotr-transition-normal: 0.3s;
+    --lotr-transition-slow: 0.5s;
+    
+    /* === Component Sizes === */
+    
+    /* Action Bar */
+    --lotr-action-slot-size: 46px;
+    --lotr-action-bar-gap: 6px;
+    
+    /* Item Slots */
+    --lotr-item-slot-small: 32px;
+    --lotr-item-slot-medium: 40px;
+    --lotr-item-slot-large: 48px;
+    
+    /* Portraits */
+    --lotr-portrait-small: 36px;
+    --lotr-portrait-medium: 60px;
+    --lotr-portrait-large: 80px;
+    --lotr-portrait-huge: 128px;
+    
+    /* Buff/Debuff Icons */
+    --lotr-buff-icon-size: 20px;
+    
+    /* Resource Bars */
+    --lotr-resource-bar-height: 20px;
+    --lotr-frame-bar-height: 16px;
+    --lotr-party-bar-height: 12px;
+}
+
+/* === Common Component Styles === */
+
+.lotr-panel {
+    background-color: var(--lotr-overlay-heavy);
+    border: 2px solid var(--lotr-gold);
+    box-shadow: var(--lotr-shadow-large);
+}
+
+.lotr-panel-dark {
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--lotr-brown);
+}
+
+.lotr-text-primary {
+    color: var(--lotr-parchment);
+    font-family: var(--lotr-font-secondary);
+}
+
+.lotr-text-heading {
+    color: var(--lotr-gold);
+    font-family: var(--lotr-font-primary);
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.lotr-text-muted {
+    color: var(--lotr-light-brown);
+}
+
+.lotr-button {
+    background-color: var(--lotr-highlight-light);
+    border: 1px solid transparent;
+    transition: all var(--lotr-transition-fast);
+}
+
+.lotr-button:hover {
+    background-color: var(--lotr-highlight-medium);
+    border-color: var(--lotr-gold);
+}
+
+.lotr-button-active {
+    background-color: var(--lotr-highlight-strong);
+    border-color: var(--lotr-gold);
+}
+
+.lotr-divider {
+    border-top: 1px solid var(--lotr-brown);
+}
+
+.lotr-divider-gold {
+    border-top: 2px solid var(--lotr-gold);
+}
+
+/* === Texture Overlays === */
+
+.lotr-texture-parchment {
+    background-image: url('textures/parchment-overlay.png');
+    background-blend-mode: multiply;
+}
+
+.lotr-texture-leather {
+    background-image: url('textures/leather-overlay.png');
+    background-blend-mode: multiply;
+}
+
+.lotr-texture-wood {
+    background-image: url('textures/wood-overlay.png');
+    background-blend-mode: multiply;
+}
+
+/* === Quest Type Badges === */
+
+.lotr-quest-badge {
+    padding: 4px 8px;
+    border-radius: var(--lotr-radius-small);
+    font-size: var(--lotr-font-size-tiny);
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.lotr-quest-badge-main {
+    background-color: var(--lotr-quest-main);
+    color: var(--lotr-dark-brown);
+}
+
+.lotr-quest-badge-side {
+    background-color: var(--lotr-quest-side);
+    color: var(--lotr-dark-brown);
+}
+
+.lotr-quest-badge-daily {
+    background-color: var(--lotr-quest-daily);
+    color: var(--lotr-dark-brown);
+}
+
+.lotr-quest-badge-weekly {
+    background-color: var(--lotr-quest-weekly);
+    color: var(--lotr-parchment);
+}
+
+.lotr-quest-badge-guild {
+    background-color: var(--lotr-quest-guild);
+    color: var(--lotr-dark-brown);
+}
+
+.lotr-quest-badge-timed {
+    background-color: var(--lotr-quest-timed);
+    color: var(--lotr-parchment);
+}
+
+.lotr-quest-badge-event {
+    background-color: var(--lotr-quest-event);
+    color: var(--lotr-parchment);
+}

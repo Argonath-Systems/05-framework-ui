@@ -1,0 +1,252 @@
+<!--
+    Combat Frames HUD Template - HYUIML
+    ====================================
+    
+    Player, target, and party frames for combat.
+    
+    Template Variables:
+      {{$player}}        - Player frame data
+      {{$target}}        - Target frame data (optional)
+      {{$partyMembers}}  - Party member frames
+    
+    Command to reload:
+      /uireload combat-frames
+    
+    Author: Argonath Systems
+    Version: 1.0.0
+    Spec: VDD-MISC-002-combat-002-combat-frames.md
+-->
+
+<style>
+    /* Player Frame (Top-Left) */
+    .player-frame {
+        layout-mode: Left;
+        anchor-top: 20;
+        anchor-left: 20;
+        anchor-width: 280;
+        anchor-height: 80;
+        background-color: rgba(45, 36, 30, 0.9);
+    }
+    
+    .frame-portrait {
+        anchor-width: 60;
+        anchor-height: 60;
+    }
+    
+    .frame-info {
+        layout-mode: Top;
+        flex-weight: 1;
+    }
+    
+    .frame-name {
+        font-size: 14;
+        font-weight: bold;
+        color: #d4a017;
+    }
+    
+    .frame-level {
+        font-size: 10;
+        color: #a89885;
+    }
+    
+    .frame-bar {
+        anchor-height: 16;
+        background-color: rgba(0, 0, 0, 0.6);
+    }
+    
+    .frame-bar-fill {
+        anchor-height: 100%;
+    }
+    
+    .frame-bar-fill[data-type="health"] {
+        background-color: #dc143c;
+    }
+    
+    .frame-bar-fill[data-type="mana"] {
+        background-color: #4169e1;
+    }
+    
+    .frame-bar-text {
+        font-size: 9;
+        color: #ffffff;
+    }
+    
+    /* Target Frame (Top-Center) */
+    .target-frame {
+        layout-mode: Left;
+        anchor-top: 20;
+        anchor-width: 280;
+        anchor-height: 80;
+        background-color: rgba(45, 36, 30, 0.9);
+    }
+    
+    /* Party Frames (Left Side) */
+    .party-frames {
+        layout-mode: Top;
+        anchor-top: 120;
+        anchor-left: 20;
+    }
+    
+    .party-frame {
+        layout-mode: Left;
+        anchor-width: 180;
+        anchor-height: 50;
+        background-color: rgba(45, 36, 30, 0.85);
+    }
+    
+    .party-portrait {
+        anchor-width: 36;
+        anchor-height: 36;
+    }
+    
+    .party-info {
+        layout-mode: Top;
+        flex-weight: 1;
+    }
+    
+    .party-name {
+        font-size: 11;
+        color: #f4e8d0;
+    }
+    
+    .party-bar {
+        anchor-height: 12;
+        background-color: rgba(0, 0, 0, 0.6);
+    }
+    
+    /* Buffs/Debuffs */
+    .buff-container {
+        layout-mode: Left;
+    }
+    
+    .buff-icon {
+        anchor-width: 20;
+        anchor-height: 20;
+    }
+    
+    .buff-icon[data-type="buff"] {
+        background-color: rgba(144, 238, 144, 0.3);
+    }
+    
+    .buff-icon[data-type="debuff"] {
+        background-color: rgba(220, 20, 60, 0.3);
+    }
+    
+    /* Cast Bar */
+    .cast-bar {
+        layout-mode: Top;
+        anchor-top: 110;
+        anchor-width: 300;
+        anchor-height: 30;
+        background-color: rgba(45, 36, 30, 0.9);
+    }
+    
+    .cast-bar-fill {
+        anchor-height: 100%;
+        background-color: #ffa500;
+    }
+    
+    .cast-bar-text {
+        font-size: 12;
+        color: #ffffff;
+    }
+</style>
+
+<div class="hud-combat-frames">
+    <!-- Player Frame -->
+    {{#if player}}
+    <div class="player-frame">
+        <hyvatar username="{{$player.avatarId}}" 
+                 render="head" 
+                 size="64" 
+                 class="frame-portrait">
+        </hyvatar>
+        
+        <div class="frame-info">
+            <p class="frame-name">{{$player.name}}</p>
+            <p class="frame-level">Level {{$player.level}}</p>
+            
+            <div class="frame-bar">
+                <div class="frame-bar-fill" 
+                     data-type="health" 
+                     style="anchor-width: {{$player.healthPercent}}%;"></div>
+                <p class="frame-bar-text">{{$player.health}}/{{$player.maxHealth}}</p>
+            </div>
+            
+            <div class="frame-bar">
+                <div class="frame-bar-fill" 
+                     data-type="mana" 
+                     style="anchor-width: {{$player.manaPercent}}%;"></div>
+                <p class="frame-bar-text">{{$player.mana}}/{{$player.maxMana}}</p>
+            </div>
+        </div>
+    </div>
+    {{/if}}
+    
+    <!-- Target Frame -->
+    {{#if target}}
+    <div class="target-frame">
+        <hyvatar username="{{$target.avatarId}}" 
+                 render="head" 
+                 size="64" 
+                 class="frame-portrait">
+        </hyvatar>
+        
+        <div class="frame-info">
+            <p class="frame-name">{{$target.name}}</p>
+            <p class="frame-level">Level {{$target.level}}</p>
+            
+            <div class="frame-bar">
+                <div class="frame-bar-fill" 
+                     data-type="health" 
+                     style="anchor-width: {{$target.healthPercent}}%;"></div>
+                <p class="frame-bar-text">{{$target.health}}/{{$target.maxHealth}}</p>
+            </div>
+            
+            {{#if target.buffs}}
+            <div class="buff-container">
+                {{#each target.buffs}}
+                <img src="{{$iconUrl}}" 
+                     class="buff-icon" 
+                     data-type="{{$type}}"
+                     data-hyui-tooltiptext="{{$name}}">
+                {{/each}}
+            </div>
+            {{/if}}
+        </div>
+    </div>
+    {{/if}}
+    
+    <!-- Party Frames -->
+    {{#if partyMembers}}
+    <div class="party-frames">
+        {{#each partyMembers}}
+        <div class="party-frame">
+            <hyvatar username="{{$avatarId}}" 
+                     render="head" 
+                     size="36" 
+                     class="party-portrait">
+            </hyvatar>
+            
+            <div class="party-info">
+                <p class="party-name">{{$name}}</p>
+                
+                <div class="party-bar">
+                    <div class="frame-bar-fill" 
+                         data-type="health" 
+                         style="anchor-width: {{$healthPercent}}%;"></div>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+    {{/if}}
+    
+    <!-- Cast Bar -->
+    {{#if player.casting}}
+    <div class="cast-bar">
+        <div class="cast-bar-fill" style="anchor-width: {{$player.castPercent}}%;"></div>
+        <p class="cast-bar-text">{{$player.castingSpell}} ({{$player.castTimeRemaining}}s)</p>
+    </div>
+    {{/if}}
+</div>
