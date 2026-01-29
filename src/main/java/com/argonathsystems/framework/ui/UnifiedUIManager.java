@@ -521,16 +521,23 @@ public class UnifiedUIManager {
     private HudLayoutData convertToHudLayoutData(HudLayoutConfig config) {
         Map<String, HudLayoutData.HudElementPosition> elements = new HashMap<>();
         
+        // Base dimensions for HUD elements (scaled by element scale factor)
+        final int BASE_WIDTH = 100;
+        final int BASE_HEIGHT = 50;
+        
         for (Map.Entry<String, com.argonathsystems.framework.ui.layout.HudElementPosition> entry : config.elements().entrySet()) {
             com.argonathsystems.framework.ui.layout.HudElementPosition frameworkPos = entry.getValue();
             
             // Convert from framework format (float x, y, scale) to accessor format (int x, y, width, height)
-            // Note: This is a simplified conversion - may need adjustment based on actual screen resolution
+            // Width/height are derived from base dimensions scaled by the element's scale factor
+            int scaledWidth = (int) (BASE_WIDTH * frameworkPos.scale());
+            int scaledHeight = (int) (BASE_HEIGHT * frameworkPos.scale());
+            
             HudLayoutData.HudElementPosition accessorPos = new HudLayoutData.HudElementPosition(
                 (int) frameworkPos.x(),
                 (int) frameworkPos.y(),
-                100, // Default width - TODO: get from element metadata
-                50,  // Default height - TODO: get from element metadata
+                scaledWidth,
+                scaledHeight,
                 frameworkPos.anchor(),
                 frameworkPos.visible()
             );
