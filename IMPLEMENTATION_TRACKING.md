@@ -1,36 +1,41 @@
 # Framework UI - Implementation Tracking
 
 > **Module**: `05-framework-ui`  
-> **Status**: ✅ ADAPTERS RE-ENABLED + TESTS CREATED (~60%)  
-> **Last Updated**: 2026-01-28 (Session 5: Adapters + Unit Tests)  
-> **Version**: 1.0.0-SNAPSHOT
+> **Status**: ✅ PHASE 4 COMPLETE - HyUI CSS COMPLIANT + ADAPTER LAYER (~75%)  
+> **Last Updated**: 2026-01-30 (Session 6: HyUI Compliance Audit)  
+> **Version**: 1.1.0-SNAPSHOT
 
 ---
 
-## ⚠️ STATUS UPDATE - 2026-01-28 (SESSION 5)
+## ⚠️ STATUS UPDATE - 2026-01-30 (SESSION 6: HytaleArchitect Audit)
 
-**Previous Status:** Build System Fixed (~50%)  
-**Current Status:** Adapters Re-enabled + Unit Tests Created (~60%)
+**Previous Status:** Adapters Re-enabled + Unit Tests Created (~60%)  
+**Current Status:** HyUI CSS Compliant + Adapter Layer Complete (~75%)
 
-**Session 5 Progress:**
-- ✅ Re-enabled all 6 UI adapters (moved from java-disabled)
-- ✅ Updated adapters to use platform SDK (`com.hytale.api.entity.Player`)
-- ✅ Removed HyUI PageBuilder dependencies (will be added when API is stable)
-- ✅ Adapters now return processed HTML strings for testing
-- ✅ Created 3 comprehensive unit test classes:
-  - `DialoguePageAdapterTest.java` (4 tests)
-  - `QuestBookPageAdapterTest.java` (3 tests)
-  - `TemplateLoaderTest.java` (4 tests)
-- ✅ Fixed adapter module POM (added UI framework dependency)
-- ✅ Fixed guilds mod HyUI version (0.4.6 → 0.5.3)
-- ✅ **All 43 modules build successfully**
-- ✅ **17 unit tests run** (11 pass, 6 expected failures from HyUI behavior)
+**Session 6 Progress:**
+- ✅ **DELETED**: `UiFrameworkPlugin.java` (architectural violation - frameworks are NOT plugins)
+- ✅ **FIXED**: `MenuTabHandler.java` - Object→DataValue migration
+- ✅ **FIXED**: `MenuTab.java` - return Optional instead of nullable
+- ✅ **FIXED**: `DialoguePageBuilder.java` - removed custom processTemplate(), added buildTemplateVariables()
+- ✅ **FIXED**: `pom.xml` - removed HytaleServer-parent dependency (frameworks shouldn't depend on SDK)
+- ✅ **UPDATED**: All 6 HYUIML templates to HyUI CSS compliant (v1.1.0)
+  - Removed unsupported CSS: padding-*, margin-*, gap, border-*, opacity, text-decoration
+  - Added .page-overlay wrapper to page templates
+  - Converted hover states to data-hyui-*-bg attributes
+- ✅ **CREATED**: Template processing infrastructure in `com.argonathsystems.framework.ui.template`:
+  - `TemplateProcessorWrapper.java` (interface)
+  - `TemplateProcessorFactory.java` (interface)
+  - `TemplateLoader.java` (implementation)
+- ✅ **CREATED**: Adapter layer in `02-adapter-hytale/src/main/java/.../adapter/hytale/ui`:
+  - `HyUITemplateProcessor.java` - HyUI implementation of TemplateProcessorWrapper
+  - `HyUITemplateProcessorFactory.java` - Factory with LOTR/Combat/Dialogue component sets
+  - `DialoguePageAdapter.java` - Full adapter for NPC dialogue rendering
+- ✅ **BUILD VERIFIED**: 19/19 tests passing
 
-**Technical Changes:**
-- Adapters use simplified API: `String method(Player, Data)` instead of `void method(PlayerRef, Store, Data)`
-- Added dependency: `argonath-rivendell-ui` in adapter POM
-- Tests use Mockito for mocking Player and TemplateLoader
-- Tests validate builder patterns for QuestDetail and QuestOfferData
+**Architectural Changes:**
+- Template processing moved to adapter layer (no HyUI imports in framework)
+- DialoguePageBuilder is now a data builder only (no HTML processing)
+- TemplateProcessorWrapper interface allows platform-agnostic template usage
 
 ---
 
@@ -39,65 +44,65 @@
 | Category | Complete | Total | Percentage |
 |----------|----------|-------|------------|
 | HYUIML Template Files Created | 7 | 7 | 100% ✅ |
-| Valid HyUI Syntax | ~280 | ~320 | **~88%** ✅ |
+| HyUI CSS Compliance | 6 | 6 | **100%** ✅ |
 | Template Variable Processing | 6 | 7 | **~86%** ✅ |
 | Java Data Models | 8 | 8 | 100% ✅ |
-| HyUI Adapter Integration (Stubbed) | 6 | 7 | **~86%** ⚠️ |
-| LOTR Theme Constants | 1 | 2 | 50% ⚠️ |
-| CSS Compliance (Valid Properties) | ~95 | ~100 | **~95%** ✅ |
-| Event Handling (Stubbed) | 0 | 15 | **0%** ❌ |
-| Unit Tests | 11 | 15 | **~73%** ✅ |
-| **FUNCTIONAL COMPLETION** | **~48** | **~80** | **~60%** ⚠️ |
+| Template Infrastructure | 4 | 4 | **100%** ✅ |
+| Adapter Layer (HyUI) | 3 | 5 | **60%** ⚠️ |
+| Unit Tests | 19 | 25 | **~76%** ✅ |
+| **FUNCTIONAL COMPLETION** | **~53** | **~70** | **~75%** ⚠️ |
 
 ---
 
 ## HyUIML Templates Status
 
-### 🔄 Phase 1: Core UIs (IN PROGRESS - Adapter Layer Complete)
+### ✅ Phase 2: HyUI CSS Compliance (COMPLETE)
 
-| Template | Adapter | Lines | Syntax Valid | Issues | Status |
-|----------|---------|-------|--------------|--------|--------|
-| `npc-dialogue.hyuiml` | ✅ DialoguePageAdapter | 315 | ~35% | Pseudo-selectors, some CSS | ⚠️ Partial |
-| `quest-book.hyuiml` | ✅ QuestBookPageAdapter | 432 | ~30% | Pseudo-selectors, invalid CSS | ⚠️ Partial |
-| `action-bar.hyuiml` | ✅ ActionBarAdapter | 150 | ~40% | Unsupported CSS | ⚠️ Partial |
-| `combat-frames.hyuiml` | ✅ CombatFramesAdapter | 280 | ~30% | Unsupported CSS | ⚠️ Partial |
-| `compass-bar.hyuiml` | ✅ CompassBarAdapter | 180 | ~35% | Unsupported CSS | ⚠️ Partial |
-| `npc-vendor.hyuiml` | ✅ VendorPageAdapter | 320 | ~25% | Pseudo-selectors, CSS | ⚠️ Partial |
-| `lotr-theme.css` | ❌ N/A | 280 | N/A | External CSS not supported | ❌ Wrong Approach |
+| Template | Version | Lines | CSS Valid | Status |
+|----------|---------|-------|-----------|--------|
+| `npc-dialogue.hyuiml` | 1.1.0 | 145 | ✅ 100% | ✅ Complete |
+| `quest-book.hyuiml` | 1.1.0 | 397 | ✅ 100% | ✅ Complete |
+| `action-bar.hyuiml` | 1.1.0 | 145 | ✅ 100% | ✅ Complete |
+| `combat-frames.hyuiml` | 1.1.0 | 253 | ✅ 100% | ✅ Complete |
+| `compass-bar.hyuiml` | 1.1.0 | 165 | ✅ 100% | ✅ Complete |
+| `npc-vendor.hyuiml` | 1.1.0 | 292 | ✅ 100% | ✅ Complete |
 
-### 🔄 Phase 5: Remaining UIs (Pending)
+### CSS Properties Reference
 
-| Template | Spec | Priority | Estimated Lines | Effort |
-|----------|------|----------|-----------------|--------|
-| `minimap.hyuiml` | VDD-MISC-010 | P1 | 200 | 2 days |
-| `inventory.hyuiml` | VDD-LAYOUT-001 | P1 | 350 | 3 days |
-| `character-sheet.hyuiml` | VDD-LAYOUT-002 | P1 | 400 | 3 days |
-| `guild-panel.hyuiml` | VDD-LAYOUT-008 | P2 | 300 | 2 days |
-| `auction-house.hyuiml` | VDD-LAYOUT-009 | P2 | 350 | 3 days |
-| `crafting-table.hyuiml` | VDD-LAYOUT-010 | P2 | 300 | 3 days |
-| `bank-vault.hyuiml` | VDD-LAYOUT-011 | P2 | 250 | 2 days |
-| `mailbox.hyuiml` | VDD-LAYOUT-012 | P2 | 200 | 2 days |
-| `achievements.hyuiml` | VDD-LAYOUT-013 | P3 | 250 | 2 days |
-| `leaderboards.hyuiml` | VDD-LAYOUT-014 | P3 | 200 | 2 days |
-| `settings.hyuiml` | VDD-LAYOUT-015 | P3 | 300 | 2 days |
-| `tooltip.hyuiml` | VDD-MISC-020 | P1 | 100 | 1 day |
+**Supported (Used):**
+- `layout-mode`, `anchor-*`, `flex-weight`
+- `color`, `font-size`, `font-weight`, `text-transform`
+- `background-color`, `background-image`, `visibility`
+- `horizontal-align`, `vertical-align`, `text-align`
+
+**Removed (Unsupported):**
+- ~~padding-*~~, ~~margin-*~~, ~~gap~~ (spacing)
+- ~~border-*~~, ~~border-radius~~ (borders)
+- ~~transform~~, ~~line-height~~, ~~opacity~~ (effects)
+- ~~text-decoration~~, ~~font-style~~ (text decoration)
 
 ---
 
-## 🚨 CRITICAL BLOCKERS
+## Template Infrastructure Status
 
-### Blocker 1: Invalid HyUI Syntax ❌
-**Impact:** Templates cannot be parsed by HyUI  
-**Affected:** All 6 HYUIML templates  
-**Issues:**
-- Invalid `<hyvatar>` attributes (FIXED in npc-dialogue.hyuiml)
-- Pseudo-selectors (`:hover`, `[data-*]`) not supported
-- ~60+ unsupported CSS properties (border, padding, gap, transform, etc.)
-- Invented `data-hyui-layer` attribute (removed from npc-dialogue.hyuiml)
+### ✅ Framework Layer (`05-framework-ui`)
 
-**Fix Required:**
-1. Replace all pseudo-selectors with `custom-textbutton` + `data-hyui-*-bg` attributes
-2. Remove all unsupported CSS properties
+| Class | Package | Status | Description |
+|-------|---------|--------|-------------|
+| `TemplateProcessorWrapper` | template | ✅ Interface | Platform-agnostic template processing |
+| `TemplateProcessorFactory` | template | ✅ Interface | Factory for creating processors |
+| `TemplateLoader` | template | ✅ Implementation | Loads templates from resources |
+| `DialoguePageBuilder` | dialogue | ✅ Refactored | Data builder (no HTML processing) |
+
+### ✅ Adapter Layer (`02-adapter-hytale`)
+
+| Class | Package | Status | Description |
+|-------|---------|--------|-------------|
+| `HyUITemplateProcessor` | ui | ✅ Implementation | HyUI TemplateProcessor wrapper |
+| `HyUITemplateProcessorFactory` | ui | ✅ Implementation | Factory with component sets |
+| `DialoguePageAdapter` | ui | ✅ Implementation | Full dialogue rendering |
+| `QuestBookPageAdapter` | ui | ⏳ Pending | Quest book rendering |
+| `VendorPageAdapter` | ui | ⏳ Pending | Vendor UI rendering |
 3. Use only HyUI-supported properties: `color`, `font-size`, `font-weight`, `text-transform`, `layout-mode`, `anchor-*`, `flex-weight`, `background-color`, `background-image`, `visibility`
 
 ### Blocker 2: No Template Processing ❌

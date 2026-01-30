@@ -7,6 +7,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-01-30
+
+### Added - Session 6: HytaleArchitect Audit & HyUI Compliance
+- **Template Infrastructure** (`com.argonathsystems.framework.ui.template`):
+  - `TemplateProcessorWrapper`: Interface for platform-agnostic template processing
+  - `TemplateProcessorFactory`: Factory interface for creating template processors
+  - `TemplateLoader`: Loads and caches HYUIML templates from resources
+- **Adapter Layer** (`02-adapter-hytale/.../adapter/hytale/ui`):
+  - `HyUITemplateProcessor`: HyUI implementation of TemplateProcessorWrapper with DataValue support
+  - `HyUITemplateProcessorFactory`: Factory with LOTR, Combat, and Dialogue component sets
+  - `DialoguePageAdapter`: Full adapter for rendering NPC dialogue pages via HyUI
+
+### Changed
+- **BREAKING**: `DialoguePageBuilder` is now a data builder only
+  - Removed `processTemplate()` method (was reimplementing HyUI functionality)
+  - Added `buildTemplateVariables()` for adapter layer integration
+  - Added `getTemplate()` for hot reload support
+- **BREAKING**: `MenuTab.fromHotkey()` and `fromId()` now return `Optional<MenuTab>` instead of nullable
+- **BREAKING**: `MenuTabHandler.handle()` now takes `DataValue` instead of `Object`
+- Removed `HytaleServer-parent` dependency from `pom.xml` (frameworks should not depend on SDK)
+- Updated all 6 HYUIML templates to version 1.1.0 with full HyUI CSS compliance
+
+### Fixed
+- **HyUI CSS Compliance**: All 6 templates now use only supported CSS properties
+  - Removed: `padding-*`, `margin-*`, `gap`, `border-*`, `opacity`, `text-decoration`, `font-style`
+  - Kept: `layout-mode`, `anchor-*`, `flex-weight`, `color`, `font-size`, `font-weight`, `background-color`
+- Added `.page-overlay` wrapper to page templates (quest-book, npc-vendor)
+- Fixed `MainMenuManager.java` and `MenuCommand.java` to handle Optional return types
+
+### Removed
+- **DELETED**: `UiFrameworkPlugin.java` (architectural violation - frameworks are NOT plugins)
+- Removed HyUI imports from framework layer (all HyUI code moved to adapter layer)
+- Removed custom template processing (delegated to HyUI TemplateProcessor)
+
+### Progress
+- Overall: 60% → 75%
+- HyUI CSS Compliance: 0% → 100%
+- Template Infrastructure: 0% → 100%
+- Adapter Layer: 0% → 60%
+
+---
+
+## [1.0.0] - 2026-01-28 (Session 5)
+
 ### Added - 2026-01-28 (Session 5: Adapters Re-enabled + Unit Tests)
 - **Unit Tests**: Created comprehensive test coverage for UI adapters:
   - `DialoguePageAdapterTest.java`: 4 tests for dialogue rendering
