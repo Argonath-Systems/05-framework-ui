@@ -11,8 +11,13 @@
     Command to reload:
       /uireload compass-bar
     
+    HyUI CSS Compliance Notes:
+      - Unsupported: transform, overflow, position:absolute
+      - Compass strip uses layout-mode: Left for horizontal layout
+      - Rotation logic must be handled in Java code, not CSS
+    
     Author: Argonath Systems
-    Version: 1.0.0
+    Version: 1.1.0
     Spec: VDD-MISC-009-world-001-compass.md
 -->
 

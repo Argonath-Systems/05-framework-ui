@@ -7,45 +7,53 @@ import java.util.HashMap;
 import java.util.function.Supplier;
 
 /**
- * Template data container for NPC Dialogue HUD using HyUIML.
+ * Platform-agnostic data builder for NPC Dialogue HUD using HyUIML.
  * 
- * <p><b>⚠️ WARNING: INCOMPLETE IMPLEMENTATION - NOT A FUNCTIONAL HyUI BUILDER!</b>
- * <p>This class only generates template data structures. It does NOT:
- * <ul>
- *   <li>Process template variables (no TemplateProcessor/Handlebars integration)
- *   <li>Render UIs (no HyUI PageBuilder.fromHtml() calls)
- *   <li>Handle events (no addEventListener binding)
- *   <li>Interact with Hytale (no PlayerRef/Store usage)
- * </ul>
+ * <p>This class builds the data model for NPC dialogue UIs. It does NOT process
+ * templates or render UIs directly - that is handled by the adapter layer using
+ * HyUI's {@code TemplateProcessor} and {@code PageBuilder}.
  * 
- * <p><b>Current Status:</b> ~10% complete - requires major refactoring.
- * <p><b>See:</b> {@code IMPLEMENTATION_TRACKING.md} for critical blockers and fix requirements.
- * 
- * <p><b>Intended Features</b> (NOT YET IMPLEMENTED):
- * <ul>
- *   <li>Branching dialogue trees with numbered choices ❌
- *   <li>Quest offer mode with objectives and rewards (template only) ⚠️
- *   <li>Keyboard shortcuts (1-9, ESC) ❌
- *   <li>Typewriter text animation ❌
- *   <li>LOTR theme styling (partial - many CSS properties unsupported) ⚠️
- * </ul>
- * 
- * <p><b>Platform Agnostic</b>: No hytale.* imports. Actual rendering requires adapter layer (not yet created).
- * 
- * <p><b>Current Usage</b> (generates unparsed template):
+ * <h2>Architecture</h2>
  * <pre>{@code
- * DialoguePageBuilder builder = new DialoguePageBuilder();
- * builder.setTemplateSupplier(() -> loadTemplate("npc-dialogue.hyuiml"))
- *        .setNpcName("Gandalf")
- *        .setDialogueText("...")
- *        .addChoice(1, "Tell me about the Ring", "quest", true);
- * 
- * String html = builder.generateHtml();
- * // ❌ Returns raw template with {{$variables}} NOT processed!
+ *   DialoguePageBuilder (this class)
+ *          ↓ builds data
+ *   Map<String, Object> templateVariables
+ *          ↓ passed to
+ *   02-adapter-hytale/DialoguePageAdapter
+ *          ↓ uses HyUI
+ *   TemplateProcessor → PageBuilder → Player UI
  * }</pre>
  * 
+ * <h2>Usage</h2>
+ * <pre>{@code
+ * // In framework layer (this module):
+ * DialoguePageBuilder builder = new DialoguePageBuilder()
+ *     .setNpcName("Gandalf the Grey")
+ *     .setNpcAvatarId("Gandalf")
+ *     .setDialogueText("A wizard is never late...")
+ *     .addChoice(1, "Tell me about the Ring", "quest-ring", true, "Quest")
+ *     .addChoice(2, "Goodbye", "farewell", true);
+ * 
+ * Map<String, Object> variables = builder.buildTemplateVariables();
+ * 
+ * // In adapter layer (02-adapter-hytale):
+ * TemplateProcessor processor = new TemplateProcessor();
+ * variables.forEach((k, v) -> processor.setVariable(k, v));
+ * String html = processor.process(templateContent);
+ * PageBuilder.pageForPlayer(playerRef).fromHtml(html).open(store);
+ * }</pre>
+ * 
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>NPC name and avatar configuration</li>
+ *   <li>Dialogue text with typewriter animation support</li>
+ *   <li>Numbered choices with keyboard shortcuts (1-9)</li>
+ *   <li>Quest offer mode with objectives and rewards</li>
+ *   <li>Hot reload support via template supplier</li>
+ * </ul>
+ * 
  * @author Argonath Systems
- * @version 1.0.0-SNAPSHOT (INCOMPLETE)
+ * @version 1.1.0
  * @see com.argonathsystems.framework.ui.dialogue.DialogueChoice
  * @see com.argonathsystems.framework.ui.dialogue.QuestOfferData
  * @since 1.0.0
@@ -73,6 +81,9 @@ public class DialoguePageBuilder {
     /**
      * Set the template supplier for hot reload support.
      * 
+     * <p>The supplier should return the raw HyUIML template content.
+     * In development mode, this can be wired to {@code UIHotReloadService.createSupplier()}.
+     * 
      * @param templateSupplier Supplier providing the base HyUIML template
      * @return this builder
      */
@@ -95,7 +106,7 @@ public class DialoguePageBuilder {
     /**
      * Set the NPC avatar ID for Hyvatar portrait rendering.
      * 
-     * @param npcAvatarId Hyvatar username
+     * @param npcAvatarId Hyvatar username or NPC identifier
      * @return this builder
      */
     public DialoguePageBuilder setNpcAvatarId(String npcAvatarId) {
@@ -119,7 +130,7 @@ public class DialoguePageBuilder {
      * 
      * @param index Choice number (1-9 for keyboard shortcuts)
      * @param text Choice text displayed to player
-     * @param choiceId Unique choice identifier
+     * @param choiceId Unique choice identifier for event handling
      * @param available Whether choice is selectable
      * @return this builder
      */
@@ -131,9 +142,9 @@ public class DialoguePageBuilder {
     /**
      * Add a dialogue choice with a type label.
      * 
-     * @param index Choice number
-     * @param text Choice text
-     * @param choiceId Choice identifier
+     * @param index Choice number (1-9 for keyboard shortcuts)
+     * @param text Choice text displayed to player
+     * @param choiceId Unique choice identifier for event handling
      * @param available Whether choice is selectable
      * @param type Choice type label (e.g., "Quest", "Lore", "Shop")
      * @return this builder
@@ -146,7 +157,7 @@ public class DialoguePageBuilder {
     /**
      * Enable quest offer mode with quest details.
      * 
-     * @param questOffer Quest offer data
+     * @param questOffer Quest offer data containing objectives and rewards
      * @return this builder
      */
     public DialoguePageBuilder setQuestOffer(QuestOfferData questOffer) {
@@ -177,20 +188,26 @@ public class DialoguePageBuilder {
     }
     
     /**
-     * Generate the HyUIML HTML for this dialogue.
+     * Build the template variables map for HyUI TemplateProcessor.
      * 
-     * <p>Uses template processor to inject variables into the template.
+     * <p>This method builds a map of variables that can be passed to
+     * HyUI's {@code TemplateProcessor.setVariable()} method. The adapter
+     * layer should use this to process the template.
      * 
-     * @return HyUIML HTML string
+     * <h3>Variable Structure</h3>
+     * <pre>{@code
+     * {
+     *   "npc": { "name": "...", "avatarId": "..." },
+     *   "currentText": "...",
+     *   "showQuestOffer": true/false,
+     *   "quest": { ... },  // if showQuestOffer
+     *   "choices": [ { "id": "...", "index": 1, "text": "...", "available": true, "type": "..." }, ... ]
+     * }
+     * }</pre>
+     * 
+     * @return Map of template variables for TemplateProcessor
      */
-    public String generateHtml() {
-        if (templateSupplier == null) {
-            throw new IllegalStateException("Template supplier not set. Call setTemplateSupplier() first.");
-        }
-        
-        String template = templateSupplier.get();
-        
-        // Build template variables
+    public Map<String, Object> buildTemplateVariables() {
         Map<String, Object> variables = new HashMap<>();
         
         // NPC data
@@ -215,105 +232,56 @@ public class DialoguePageBuilder {
         }
         variables.put("choices", choicesList);
         
-        // Process template (simple variable replacement for now)
-        // In production, this would use HyUI's TemplateProcessor
-        return processTemplate(template, variables);
+        return variables;
     }
     
     /**
-     * Simple template variable replacement.
+     * Get the raw template content from the supplier.
      * 
-     * <p>In production, this should be replaced with HyUI's TemplateProcessor
-     * which supports {{#if}}, {{#each}}, and other advanced features.
+     * <p>The adapter layer should call this to get the template, then use
+     * {@link #buildTemplateVariables()} to process it with HyUI TemplateProcessor.
      * 
-     * @param template Template string
-     * @param variables Variable map
-     * @return Processed template
+     * @return Raw HyUIML template string
+     * @throws IllegalStateException if template supplier not set
      */
-    private String processTemplate(String template, Map<String, Object> variables) {
-        String result = template;
-        
-        // Replace simple variables like {{$npc.name}}
-        result = result.replace("{{$npc.name}}", (String) ((Map<?, ?>) variables.get("npc")).get("name"));
-        result = result.replace("{{$npc.avatarId}}", (String) ((Map<?, ?>) variables.get("npc")).get("avatarId"));
-        result = result.replace("{{$currentText}}", (String) variables.get("currentText"));
-        
-        // Handle {{#if showQuestOffer}} blocks
-        boolean showQuest = (Boolean) variables.get("showQuestOffer");
-        if (showQuest) {
-            // Keep quest offer section, remove dialogue choices section
-            result = result.replaceAll("(?s)\\{\\{#if showQuestOffer\\}\\}(.+?)\\{\\{else\\}\\}.+?\\{\\{/if\\}\\}", "$1");
-        } else {
-            // Keep dialogue choices section, remove quest offer section
-            result = result.replaceAll("(?s)\\{\\{#if showQuestOffer\\}\\}.+?\\{\\{else\\}\\}(.+?)\\{\\{/if\\}\\}", "$1");
+    public String getTemplate() {
+        if (templateSupplier == null) {
+            throw new IllegalStateException("Template supplier not set. Call setTemplateSupplier() first.");
         }
-        
-        // Handle {{#each choices}} blocks
-        @SuppressWarnings("unchecked")
-        List<Map<String, Object>> choicesList = (List<Map<String, Object>>) variables.get("choices");
-        StringBuilder choicesHtml = new StringBuilder();
-        for (Map<String, Object> choice : choicesList) {
-            String choiceTemplate = extractEachBlock(result, "choices");
-            choicesHtml.append(processChoiceTemplate(choiceTemplate, choice));
-        }
-        result = result.replaceAll("(?s)\\{\\{#each choices\\}\\}.+?\\{\\{/each\\}\\}", choicesHtml.toString());
-        
-        return result;
+        return templateSupplier.get();
     }
     
-    private String extractEachBlock(String template, String blockName) {
-        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(
-            "\\{\\{#each " + blockName + "\\}\\}(.+?)\\{\\{/each\\}\\}", 
-            java.util.regex.Pattern.DOTALL
-        );
-        java.util.regex.Matcher matcher = pattern.matcher(template);
-        if (matcher.find()) {
-            return matcher.group(1);
-        }
-        return "";
-    }
-    
-    private String processChoiceTemplate(String template, Map<String, Object> choice) {
-        String result = template;
-        result = result.replace("{{$id}}", (String) choice.get("id"));
-        result = result.replace("{{$index}}", String.valueOf(choice.get("index")));
-        result = result.replace("{{$text}}", (String) choice.get("text"));
-        
-        // Handle {{#if !available}}
-        boolean available = (Boolean) choice.get("available");
-        if (!available) {
-            result = result.replace("{{#if !available}}", "");
-            result = result.replace("{{/if}}", "");
-        } else {
-            result = result.replaceAll("\\{\\{#if !available\\}\\}.+?\\{\\{/if\\}\\}", "");
-        }
-        
-        // Handle {{#if type}}
-        String type = (String) choice.get("type");
-        if (type != null && !type.isEmpty()) {
-            result = result.replace("{{#if type}}", "");
-            result = result.replace("{{$type}}", type);
-            result = result.replace("{{/if}}", "");
-        } else {
-            result = result.replaceAll("\\{\\{#if type\\}\\}.+?\\{\\{/if\\}\\}", "");
-        }
-        
-        return result;
+    /**
+     * Check if a template supplier has been set.
+     * 
+     * @return true if template supplier is configured
+     */
+    public boolean hasTemplateSupplier() {
+        return templateSupplier != null;
     }
     
     /**
      * Get the current NPC name.
      * 
-     * @return NPC name
+     * @return NPC name, or null if not set
      */
     public String getNpcName() {
         return npcName;
     }
     
     /**
+     * Get the NPC avatar ID.
+     * 
+     * @return Avatar ID, or null if not set
+     */
+    public String getNpcAvatarId() {
+        return npcAvatarId;
+    }
+    
+    /**
      * Get the current dialogue text.
      * 
-     * @return Dialogue text
+     * @return Dialogue text, or null if not set
      */
     public String getDialogueText() {
         return dialogueText;
@@ -335,5 +303,14 @@ public class DialoguePageBuilder {
      */
     public boolean isShowingQuestOffer() {
         return showQuestOffer;
+    }
+    
+    /**
+     * Get the quest offer data if in quest offer mode.
+     * 
+     * @return Quest offer data, or null if not in quest offer mode
+     */
+    public QuestOfferData getQuestOffer() {
+        return questOffer;
     }
 }

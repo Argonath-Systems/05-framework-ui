@@ -1,14 +1,14 @@
 {
   "Group": "ArgonathSystems",
   "Name": "UiFramework",
-  "Version": "1.0.0-SNAPSHOT",
-  "Description": "UI framework for HUD layout, menu management, and keybind hints",
+  "Version": "1.1.0-SNAPSHOT",
+  "Description": "Platform-agnostic UI framework for HUD layout, menu management, and HyUIML templates. This is a LIBRARY - initialize via UnifiedUIManager.getInstance().init(accessor)",
   "Authors": [
     {
-      "Name": "LordOfTheTales Team"
+      "Name": "Argonath Systems Team"
     }
   ],
-  "Website": "",
+  "Website": "https://argonath-systems.github.io/00-Argonath-Wiki",
   "ServerVersion": "*",
   "Dependencies": {
     "ArgonathSystems:AccessorApi": "*",
@@ -18,6 +18,5 @@
   },
   "OptionalDependencies": {},
   "DisabledByDefault": false,
-  "IncludesAssetPack": false,
-  "Main": "com.argonathsystems.framework.ui.UiFrameworkPlugin"
+  "IncludesAssetPack": true
 }

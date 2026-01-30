@@ -1,11 +1,14 @@
 package com.argonathsystems.framework.ui.menu;
 
+import java.util.Optional;
+
 /**
  * Defines a tab in the main menu.
  * Each tab corresponds to a major game system.
  * 
  * @author Argonath Systems Team
- * @version 1.0.0
+ * @version 1.1.0
+ * @since 1.0.0
  */
 public enum MenuTab {
     // Primary Tabs
@@ -56,30 +59,38 @@ public enum MenuTab {
     
     /**
      * Find a tab by its hotkey.
+     * 
      * @param key The key pressed (e.g., "G", "M", "J")
-     * @return The matching tab, or null if no match
+     * @return Optional containing the matching tab, or empty if no match
      */
-    public static MenuTab fromHotkey(String key) {
-        if (key == null) return null;
+    public static Optional<MenuTab> fromHotkey(String key) {
+        if (key == null) {
+            return Optional.empty();
+        }
         String upperKey = key.toUpperCase();
         for (MenuTab tab : values()) {
             if (upperKey.equals(tab.hotkey)) {
-                return tab;
+                return Optional.of(tab);
             }
         }
-        return null;
+        return Optional.empty();
     }
     
     /**
      * Find a tab by its ID.
+     * 
+     * @param id The tab ID (e.g., "character", "quests")
+     * @return Optional containing the matching tab, or empty if no match
      */
-    public static MenuTab fromId(String id) {
-        if (id == null) return null;
+    public static Optional<MenuTab> fromId(String id) {
+        if (id == null) {
+            return Optional.empty();
+        }
         for (MenuTab tab : values()) {
             if (tab.id.equals(id)) {
-                return tab;
+                return Optional.of(tab);
             }
         }
-        return null;
+        return Optional.empty();
     }
 }

@@ -11,8 +11,12 @@
     Command to reload:
       /uireload action-bar
     
+    HyUI CSS Compliance Notes:
+      - Uses layout-mode: Center for centering (transform not supported)
+      - Unsupported: text-shadow, transform, padding, margin, gap, border
+    
     Author: Argonath Systems
-    Version: 1.0.0
+    Version: 1.1.0
     Spec: VDD-MISC-001-combat-001-action-bar.md
 -->
 

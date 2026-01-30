@@ -1,5 +1,6 @@
 package com.argonathsystems.framework.ui.menu;
 
+import com.argonathsystems.framework.accessorapi.data.DataValue;
 import java.util.UUID;
 
 /**
@@ -7,7 +8,8 @@ import java.util.UUID;
  * Each mod can register a handler for its tabs.
  * 
  * @author Argonath Systems Team
- * @version 1.0.0
+ * @version 1.1.0
+ * @since 1.0.0
  */
 public interface MenuTabHandler {
     
@@ -23,12 +25,15 @@ public interface MenuTabHandler {
     /**
      * Handle a UI event from within this tab's content.
      * 
+     * <p>Event data is provided as type-safe {@link DataValue} per accessor v2.0.0.
+     * Use {@code data.asString()}, {@code data.asInt()}, etc. to extract values.
+     * 
      * @param playerId The player who triggered the event
      * @param tab The current tab
      * @param eventId The event/button ID that was triggered
-     * @param data Optional event data
+     * @param data Optional event data (may be null)
      */
-    default void handleEvent(UUID playerId, MenuTab tab, String eventId, Object data) {
+    default void handleEvent(UUID playerId, MenuTab tab, String eventId, DataValue data) {
         // Default no-op
     }
 }

@@ -14,14 +14,26 @@
     Command to reload:
       /uireload npc-vendor
     
+    HyUI CSS Compliance Notes:
+      - Uses .page-overlay wrapper for proper page rendering
+      - Hover/press states via data-hyui-*-bg attributes
+      - Unsupported: flex-wrap, padding, margin, gap, border
+    
     Author: Argonath Systems
-    Version: 1.0.0
+    Version: 1.1.0
     Spec: VDD-LAYOUT-006-npc-vendor.md
 -->
 
 <style>
-    .page-vendor {
+    .page-overlay {
         layout-mode: Center;
+        anchor-width: 100%;
+        anchor-height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+    
+    .page-vendor {
+        layout-mode: Top;
         anchor-width: 850;
         anchor-height: 600;
         background-color: rgba(45, 36, 30, 0.98);
@@ -180,6 +192,7 @@
     }
 </style>
 
+<div class="page-overlay">
 <div class="page-vendor">
     <div class="vendor-container">
         <!-- Header -->
@@ -275,4 +288,4 @@
             {{/if}}
         </div>
     </div>
-</div>
+</div></div>

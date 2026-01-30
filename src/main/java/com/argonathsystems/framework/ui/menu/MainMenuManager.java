@@ -140,8 +140,9 @@ public class MainMenuManager {
         }
         
         // Check for direct tab hotkey
-        MenuTab tab = MenuTab.fromHotkey(upperKey);
-        if (tab != null && isTabEnabled(tab)) {
+        var tabOpt = MenuTab.fromHotkey(upperKey);
+        if (tabOpt.isPresent() && isTabEnabled(tabOpt.get())) {
+            MenuTab tab = tabOpt.get();
             if (isMenuOpen(playerId) && playerCurrentTab.get(playerId) == tab) {
                 // Same tab pressed again - close menu
                 closeMenu(playerId);

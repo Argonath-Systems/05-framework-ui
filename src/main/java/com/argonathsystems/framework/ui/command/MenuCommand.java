@@ -130,7 +130,7 @@ public final class MenuCommand {
     }
     
     private static void openTab(com.argonathsystems.framework.accessorapi.CommandSender sender, UUID playerId, String tabName) {
-        MenuTab tab = MenuTab.fromId(tabName.toLowerCase());
+        MenuTab tab = MenuTab.fromId(tabName.toLowerCase()).orElse(null);
         
         if (tab == null) {
             // Try to find by display name

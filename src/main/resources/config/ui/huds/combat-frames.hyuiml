@@ -12,8 +12,12 @@
     Command to reload:
       /uireload combat-frames
     
+    HyUI CSS Compliance Notes:
+      - Unsupported: padding, margin, gap, border, text-shadow
+      - All frames use standard HyUI layout-mode patterns
+    
     Author: Argonath Systems
-    Version: 1.0.0
+    Version: 1.1.0
     Spec: VDD-MISC-002-combat-002-combat-frames.md
 -->
 

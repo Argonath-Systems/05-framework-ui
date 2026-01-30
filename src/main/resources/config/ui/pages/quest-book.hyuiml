@@ -13,20 +13,32 @@
     Command to reload:
       /uireload quest-book
     
+    HyUI CSS Compliance Notes:
+      - Uses .page-overlay wrapper for proper page rendering
+      - Hover/press states via data-hyui-*-bg attributes
+      - Unsupported: font-style, text-decoration, padding, margin, gap, border
+    
     Author: Argonath Systems
-    Version: 1.0.0
+    Version: 1.1.0
     Spec: VDD-MISC-024-quest-002-quest-book.md
 -->
 
 <style>
     /* === Quest Book Page Styles (LOTR Theme) === */
+    /* HyUI CSS Compliant */
+    
+    .page-overlay {
+        layout-mode: Center;
+        anchor-width: 100%;
+        anchor-height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
     
     .page-quest-book {
-        layout-mode: Center;
+        layout-mode: Top;
         anchor-width: 750;
         anchor-height: 550;
         background-color: rgba(45, 36, 30, 0.98);
-        /* Border removed - HyUI doesn't support border property */
     }
     
     .quest-book-container {
@@ -242,16 +254,16 @@
     .empty-state {
         layout-mode: Center;
         flex-weight: 1;
-        text-align: center;
+        horizontal-align: center;
     }
     
     .empty-state-text {
         font-size: 16;
         color: #a89885;
-        font-style: italic;
     }
 </style>
 
+<div class="page-overlay">
 <div class="page-quest-book">
     <div class="quest-book-container">
         <!-- Header -->
@@ -393,4 +405,4 @@
             {{/if}}
         </div>
     </div>
-</div>
+</div></div>

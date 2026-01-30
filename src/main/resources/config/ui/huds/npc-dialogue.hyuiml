@@ -15,13 +15,22 @@
     Command to reload:
       /uireload npc-dialogue
     
+    HyUI CSS Compliance Notes:
+      - Unsupported: padding-*, margin-*, gap, border-*, opacity, text-decoration,
+                     transform, line-height, box-shadow, border-radius, letter-spacing
+      - Supported: layout-mode, anchor-*, flex-weight, color, font-size, font-weight,
+                   text-transform, background-color, background-image, visibility,
+                   text-align, vertical-align, horizontal-align
+      - For hover/disabled states: use custom-textbutton with data-hyui-*-label-style
+    
     Author: Argonath Systems
-    Version: 1.0.0
+    Version: 1.1.0
     Spec: VDD-MISC-005-quest-001-npc-dialogue.md
 -->
 
 <style>
     /* === NPC Dialogue HUD Styles (LOTR Theme) === */
+    /* HyUI CSS Compliant - Removed unsupported properties */
     
     .hud-npc-dialogue {
         layout-mode: Top;
@@ -30,13 +39,10 @@
         anchor-width: 700;
         anchor-height: 300;
         background-color: rgba(45, 36, 30, 0.95);
-        /* Note: HyUI does not support transform, border, padding, or box-shadow */
-        /* Centering must be handled via anchor positioning */
     }
     
     .dialogue-container {
         layout-mode: Left;
-        /* Note: Use row-gap/column-gap for HyUI 0.6.0+ */
         flex-weight: 1;
     }
     
@@ -49,7 +55,6 @@
     .portrait-image {
         anchor-width: 80;
         anchor-height: 100;
-        /* Note: HyUI does not support border or border-radius */
     }
     
     /* Dialogue Content */
@@ -59,7 +64,7 @@
     }
     
     .npc-header {
-        /* Note: padding not supported in HyUI CSS */
+        layout-mode: Left;
     }
     
     .npc-name {
@@ -67,28 +72,24 @@
         font-weight: bold;
         color: #d4a017;
         text-transform: uppercase;
-        /* Note: letter-spacing only supported in custom button label styles */
     }
     
     .dialogue-text {
         background-color: rgba(0, 0, 0, 0.2);
-        /* Note: min-height may be supported in HyUI 0.6.0+ */
-        min-height: 60;
+        anchor-height: 60;
     }
     
     .speech-text {
         font-size: 14;
         color: #f4e8d0;
-        /* Note: line-height not supported */
     }
     
     .dialogue-divider {
         background-color: #6b5d4f;
         anchor-height: 1;
-        /* Note: Use background-color for visual dividers, border not supported */
     }
     
-    /* Dialogue Choices */
+    /* Dialogue Choices - uses custom-textbutton for state styling */
     .dialogue-choices {
         layout-mode: Top;
     }
@@ -96,7 +97,6 @@
     .dialogue-choice {
         layout-mode: Left;
         anchor-height: 28;
-        /* Note: State-based styling moved to data-hyui-*-bg attributes on button elements */
     }
     
     .choice-number {
@@ -114,7 +114,6 @@
     .choice-type {
         color: #a89885;
         font-size: 11;
-        /* Note: font-style not in standard CSS mapping, needs data-hyui-style */
     }
     
     /* Quest Offer Section */
@@ -132,8 +131,6 @@
     
     .quest-objectives {
         layout-mode: Top;
-        padding-left: 16;
-        gap: 4;
     }
     
     .quest-objective-item {
@@ -143,8 +140,6 @@
     
     .rewards-section {
         layout-mode: Top;
-        gap: 6;
-        padding-top: 8;
     }
     
     .rewards-label {
@@ -156,8 +151,6 @@
     
     .reward-items {
         layout-mode: Left;
-        gap: 8;
-        align-items: center;
     }
     
     .reward-xp {
@@ -174,31 +167,20 @@
     
     .quest-actions {
         layout-mode: Right;
-        gap: 8;
-        margin-top: 8;
     }
     
     /* Footer */
     .dialogue-footer {
         layout-mode: Right;
-        padding-top: 4;
     }
     
     .close-hint {
         font-size: 10;
         color: #a89885;
-        font-style: italic;
     }
     
-    /* Disabled state */
-    .dialogue-choice[data-disabled="true"] {
-        opacity: 0.5;
-    }
-    
-    .dialogue-choice[data-disabled="true"] .choice-text {
-        color: #888888;
-        text-decoration: line-through;
-    }
+    /* Disabled choice styling is handled via data-hyui-disabled-label-style */
+    /* on the custom-textbutton element in the HTML section below */
 </style>
 
 <div class="hud-npc-dialogue">
