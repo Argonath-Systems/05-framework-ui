@@ -7,6 +7,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-01-30
+
+### Added - Session 8: Full Builder Implementation
+
+- **Vendor Package** (`com.argonathsystems.framework.ui.vendor`):
+  - `VendorItem.java`: Vendor shop item with builder pattern (name, icon, price, stock, categories)
+  - `InventoryItem.java`: Player inventory item model for sell/buyback operations
+  - `VendorPageBuilder.java`: Full vendor UI data builder with Buy/Sell/Buyback tabs
+    - Supports item filtering, selection, quantity management, player gold tracking
+    - Implements `buildTemplateVariables()`, `getTemplate()`, `hasTemplateSupplier()`
+
+- **Combat Package** (`com.argonathsystems.framework.ui.combat`):
+  - `ActionSlot.java`: Action bar slot with cooldown, charges, keybind support (builder pattern)
+  - `ResourceBar.java`: Health/mana/energy/stamina bars with factory methods (`health()`, `mana()`, etc.)
+  - `ActionBarBuilder.java`: 12-slot action bar builder with health bar and primary/secondary resources
+  - `UnitFrame.java`: Unit frame with name, health, buffs/debuffs, combat state (nested `BuffDebuff` class)
+  - `CombatFramesBuilder.java`: Player frame, target frame, target-of-target, party/raid frames builder
+
+- **World Package** (`com.argonathsystems.framework.ui.world`):
+  - `CompassMarker.java`: Compass POI marker with automatic bearing calculation from player position
+  - `CompassBarBuilder.java`: Skyrim-style compass bar with heading, position, and marker support
+
+- **Adapter Layer** (`02-adapter-hytale/.../adapter/hytale/ui`):
+  - `QuestBookPageAdapter.java`: Quest book page rendering with category tabs
+  - `VendorPageAdapter.java`: Vendor UI rendering with buy/sell event handling
+  - `ActionBarAdapter.java`: Action bar HUD rendering with cooldown updates
+  - `CombatFramesAdapter.java`: Combat frames HUD rendering with unit frame updates
+  - `CompassBarAdapter.java`: Compass bar HUD rendering with heading/marker updates
+
+### Changed
+
+- **`QuestBookPageBuilder`**: Refactored to match DialoguePageBuilder pattern
+  - Added `buildTemplateVariables()` for template variable generation
+  - Added `getTemplate()` for hot reload support
+  - Added `hasTemplateSupplier()` for template supplier detection
+
+### Technical
+
+- All HUD adapters use `HudBuilder.hudForPlayer(player).fromHtml(html).show(store)` pattern
+- HyUI Multi-HUD system manages HUD lifecycle automatically (no manual tracking needed)
+- Adapters use `Set<PlayerRef>` for simple player state tracking
+- `TemplateProcessor` handles variable interpolation via `setVariable()` and `process()`
+
+### Progress
+- Overall: 75% → 90%
+- Java Data Builders: 2 → 6 (100%)
+- Java Data Models: 5 → 12 (100%)
+- Adapter Layer: 60% → 88%
+
+---
+
 ## [1.1.0] - 2026-01-30
 
 ### Added - Session 6: HytaleArchitect Audit & HyUI Compliance
