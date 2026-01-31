@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added - NPC/Quest Animation Implementation (Phase 6)
+
+- **Cinematic Package** (`com.argonathsystems.framework.ui.cinematic`):
+  - `CinematicCameraService.java`: Service for managing cinematic camera sequences
+    - Smooth position/rotation interpolation with multiple easing functions
+    - Camera path following with keyframes
+    - Focus on entity/position with depth-of-field effects
+    - Letterbox mode for cutscenes
+    - Camera shake effects
+    - Player input blocking during sequences
+  - `CameraKeyframe`: Record for camera path keyframes (position, rotation, time)
+  - `CameraSequence`: Builder-pattern sequence definition with letterbox and easing options
+  - `Easing`: Enum with LINEAR, EASE_IN, EASE_OUT, EASE_IN_OUT, CUBIC_IN, CUBIC_OUT, CUBIC_IN_OUT
+
+### Specification Reference
+- SF-NPC-044: Dialogue Cinematic Camera
+- IMPL-PLAN-2026-Q1-NPC-QUEST-ANIMATION: Phase 6
+
 ## [1.2.0] - 2026-01-30
 
 ### Added - Session 8: Full Builder Implementation
