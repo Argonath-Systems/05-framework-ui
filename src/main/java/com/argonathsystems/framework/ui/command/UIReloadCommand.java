@@ -1,6 +1,6 @@
 package com.argonathsystems.framework.ui.command;
 
-import com.argonathsystems.framework.accessorapi.CommandSender;
+import com.argonathsystems.framework.accessorapi.command.CommandSender;
 import com.argonathsystems.framework.command.Arguments;
 import com.argonathsystems.framework.command.CommandRegistry;
 import com.argonathsystems.framework.command.CommandSpec;

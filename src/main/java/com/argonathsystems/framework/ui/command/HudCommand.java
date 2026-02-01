@@ -1,5 +1,6 @@
 package com.argonathsystems.framework.ui.command;
 
+import com.argonathsystems.framework.accessorapi.command.CommandSender;
 import com.argonathsystems.framework.command.Arguments;
 import com.argonathsystems.framework.command.CommandRegistry;
 import com.argonathsystems.framework.command.CommandSpec;
@@ -42,7 +43,11 @@ public final class HudCommand {
                     return;
                 }
                 
-                UUID playerId = context.getSender().getUniqueId();
+                UUID playerId = context.getSender().getPlayerId().orElse(null);
+                if (playerId == null) {
+                    context.getSender().sendMessage("§cCould not determine your player ID.");
+                    return;
+                }
                 String subcommand = context.getArgument("subcommand", String.class)
                     .orElse("edit"); // Default to edit if no subcommand
                 
@@ -60,7 +65,7 @@ public final class HudCommand {
             .build());
     }
     
-    private static void handleEdit(com.argonathsystems.framework.accessorapi.CommandSender sender, UUID playerId) {
+    private static void handleEdit(CommandSender sender, UUID playerId) {
         UnifiedUIManager manager = UnifiedUIManager.getInstance();
         
         if (manager.isInEditMode(playerId)) {
@@ -73,19 +78,19 @@ public final class HudCommand {
         }
     }
     
-    private static void handleReset(com.argonathsystems.framework.accessorapi.CommandSender sender, UUID playerId) {
+    private static void handleReset(CommandSender sender, UUID playerId) {
         UnifiedUIManager manager = UnifiedUIManager.getInstance();
         manager.resetLayout(playerId);
         sender.sendMessage("§aHUD layout reset to defaults.");
     }
     
-    private static void handleSave(com.argonathsystems.framework.accessorapi.CommandSender sender, UUID playerId) {
+    private static void handleSave(CommandSender sender, UUID playerId) {
         UnifiedUIManager manager = UnifiedUIManager.getInstance();
         manager.forceSaveLayout(playerId);
         sender.sendMessage("§aHUD layout saved.");
     }
     
-    private static void showHelp(com.argonathsystems.framework.accessorapi.CommandSender sender) {
+    private static void showHelp(CommandSender sender) {
         sender.sendMessage("§6=== HUD Commands ===");
         sender.sendMessage("§e/hud edit §7- Toggle HUD edit mode (or press §eF7§7)");
         sender.sendMessage("§e/hud reset §7- Reset HUD layout to defaults");

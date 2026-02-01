@@ -1,5 +1,6 @@
 package com.argonathsystems.framework.ui.command;
 
+import com.argonathsystems.framework.accessorapi.command.CommandSender;
 import com.argonathsystems.framework.command.Arguments;
 import com.argonathsystems.framework.command.CommandRegistry;
 import com.argonathsystems.framework.command.CommandSpec;
@@ -59,7 +60,11 @@ public final class MenuCommand {
                     return;
                 }
                 
-                UUID playerId = context.getSender().getUniqueId();
+                UUID playerId = context.getSender().getPlayerId().orElse(null);
+                if (playerId == null) {
+                    context.getSender().sendMessage("§cCould not determine your player ID.");
+                    return;
+                }
                 String tabArg = context.getArgument("tab", String.class).orElse(null);
                 
                 if (tabArg == null || tabArg.isEmpty()) {
@@ -108,7 +113,11 @@ public final class MenuCommand {
                     return;
                 }
                 
-                UUID playerId = context.getSender().getUniqueId();
+                UUID playerId = context.getSender().getPlayerId().orElse(null);
+                if (playerId == null) {
+                    context.getSender().sendMessage("§cCould not determine your player ID.");
+                    return;
+                }
                 MainMenuManager.getInstance().openMenu(playerId, tab);
             });
         
@@ -119,7 +128,7 @@ public final class MenuCommand {
         registry.register(builder.build());
     }
     
-    private static void handleClose(com.argonathsystems.framework.accessorapi.CommandSender sender, UUID playerId) {
+    private static void handleClose(CommandSender sender, UUID playerId) {
         MainMenuManager manager = MainMenuManager.getInstance();
         if (manager.isMenuOpen(playerId)) {
             manager.closeMenu(playerId);
@@ -129,7 +138,7 @@ public final class MenuCommand {
         }
     }
     
-    private static void openTab(com.argonathsystems.framework.accessorapi.CommandSender sender, UUID playerId, String tabName) {
+    private static void openTab(CommandSender sender, UUID playerId, String tabName) {
         MenuTab tab = MenuTab.fromId(tabName.toLowerCase()).orElse(null);
         
         if (tab == null) {
@@ -157,7 +166,7 @@ public final class MenuCommand {
         manager.openMenu(playerId, tab);
     }
     
-    private static void showTabs(com.argonathsystems.framework.accessorapi.CommandSender sender) {
+    private static void showTabs(CommandSender sender) {
         sender.sendMessage("§6Available Menu Tabs:");
         
         String tabList = Arrays.stream(MenuTab.values())
