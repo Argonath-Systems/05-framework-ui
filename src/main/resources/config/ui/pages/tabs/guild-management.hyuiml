@@ -1,0 +1,703 @@
+<!--
+    Guild Management Sub-Page
+    Reference: VDD-MISC-026-guilds-001-guild-management.md
+    
+    Parent Tab: Social (sub-page) or Faction
+    Features: Guild info, roster, ranks, events, treasury
+-->
+
+<style>
+.guild-page {
+    layout-mode: Left;
+    flex-weight: 1;
+}
+
+/* Left Panel - Guild Overview */
+.guild-overview {
+    layout-mode: Top;
+    anchor-width: 280;
+    background-color: #1e1812;
+}
+
+.guild-banner {
+    layout-mode: Top;
+    anchor-height: 120;
+    background-color: #252015;
+    horizontal-align: center;
+    vertical-align: center;
+}
+
+.guild-emblem {
+    anchor-width: 64; anchor-height: 64;
+    background-color: #333;
+}
+
+.guild-name {
+    color: #d4af37;
+    font-size: 18;
+    font-weight: bold;
+}
+
+.guild-tag {
+    color: #888;
+    font-size: 12;
+}
+
+.guild-stats {
+    layout-mode: Top;
+}
+
+.stat-row {
+    layout-mode: Left;
+    anchor-height: 32;
+    background-color: #1a1510;
+    vertical-align: center;
+}
+
+.stat-row.alt {
+    background-color: #201a14;
+}
+
+.stat-label {
+    color: #888;
+    font-size: 11;
+    anchor-width: 100;
+}
+
+.stat-value {
+    color: #ccc;
+    font-size: 11;
+    flex-weight: 1;
+}
+
+.stat-value.highlight {
+    color: #d4af37;
+}
+
+.guild-motd {
+    layout-mode: Top;
+    flex-weight: 1;
+    background-color: #1a1510;
+}
+
+.motd-header {
+    anchor-height: 28;
+    background-color: #252015;
+}
+
+.motd-title {
+    color: #888;
+    font-size: 10;
+    text-transform: uppercase;
+}
+
+.motd-content {
+    flex-weight: 1;
+}
+
+.motd-text {
+    color: #9d9d9d;
+    font-size: 11;
+}
+
+.guild-actions {
+    layout-mode: Left;
+    anchor-height: 44;
+    background-color: #252015;
+    horizontal-align: center;
+    vertical-align: center;
+}
+
+.guild-btn {
+    anchor-height: 28;
+    background-color: #3a3530;
+    color: #ccc;
+    font-size: 11;
+}
+
+.guild-btn.leave {
+    background-color: #5a3030;
+    color: #db9d9d;
+}
+
+/* Center Panel - Roster */
+.guild-roster {
+    layout-mode: Top;
+    flex-weight: 1;
+}
+
+.roster-header {
+    layout-mode: Left;
+    anchor-height: 40;
+    background-color: #252015;
+    vertical-align: center;
+}
+
+.roster-title {
+    color: #d4af37;
+    font-size: 14;
+    font-weight: bold;
+}
+
+.roster-count {
+    color: #888;
+    font-size: 11;
+}
+
+.roster-tabs {
+    layout-mode: Left;
+    anchor-height: 32;
+    background-color: #1e1812;
+}
+
+.roster-tab {
+    anchor-height: 32;
+    background-color: transparent;
+    color: #888;
+    font-size: 11;
+}
+
+.roster-tab.active {
+    background-color: #252015;
+    color: #d4af37;
+}
+
+/* Roster Table */
+.roster-table {
+    layout-mode: Top;
+    flex-weight: 1;
+}
+
+.roster-columns {
+    layout-mode: Left;
+    anchor-height: 28;
+    background-color: #201a14;
+}
+
+.column-header {
+    color: #888;
+    font-size: 10;
+    text-transform: uppercase;
+}
+
+.col-name { anchor-width: 140; }
+.col-rank { anchor-width: 100; }
+.col-level { anchor-width: 50; }
+.col-class { anchor-width: 80; }
+.col-note { flex-weight: 1; }
+.col-status { anchor-width: 60; }
+.col-actions { anchor-width: 80; }
+
+.roster-list {
+    layout-mode: Top;
+    flex-weight: 1;
+    background-color: #1a1510;
+}
+
+.member-row {
+    layout-mode: Left;
+    anchor-height: 36;
+    background-color: transparent;
+    vertical-align: center;
+}
+
+.member-row.alt {
+    background-color: #1e1812;
+}
+
+.member-row.selected {
+    background-color: rgba(212, 175, 55, 0.15);
+}
+
+.member-row.offline {
+    color: #666;
+}
+
+.member-name-col {
+    layout-mode: Left;
+    anchor-width: 140;
+    vertical-align: center;
+}
+
+.online-dot {
+    anchor-width: 6; anchor-height: 6;
+    background-color: #5a9d5a;
+}
+
+.online-dot.offline {
+    background-color: #666;
+}
+
+.member-name {
+    color: #ccc;
+    font-size: 11;
+}
+
+.member-rank {
+    color: #9d9d9d;
+    font-size: 11;
+    anchor-width: 100;
+}
+
+.member-rank.officer {
+    color: #9d9ddb;
+}
+
+.member-rank.leader {
+    color: #d4af37;
+}
+
+.member-level {
+    color: #888;
+    font-size: 11;
+    anchor-width: 50;
+}
+
+.member-class {
+    color: #888;
+    font-size: 11;
+    anchor-width: 80;
+}
+
+.member-note {
+    color: #666;
+    font-size: 10;
+    flex-weight: 1;
+}
+
+.member-status {
+    anchor-width: 60;
+}
+
+.status-text.online {
+    color: #9ddb9d;
+    font-size: 10;
+}
+
+.status-text.offline {
+    color: #666;
+    font-size: 10;
+}
+
+.member-actions {
+    layout-mode: Left;
+    anchor-width: 80;
+}
+
+.action-btn-sm {
+    anchor-width: 24; anchor-height: 24;
+    background-color: transparent;
+    color: #888;
+    font-size: 11;
+}
+
+/* Right Panel - Events & Bank */
+.guild-sidebar {
+    layout-mode: Top;
+    anchor-width: 220;
+    background-color: #1e1812;
+}
+
+.sidebar-section {
+    layout-mode: Top;
+}
+
+.sidebar-header {
+    layout-mode: Left;
+    anchor-height: 36;
+    background-color: #252015;
+    vertical-align: center;
+}
+
+.sidebar-title {
+    color: #d4af37;
+    font-size: 12;
+    font-weight: bold;
+}
+
+.sidebar-badge {
+    background-color: #5a3530;
+    color: #db9d9d;
+    font-size: 9;
+    anchor-height: 16;
+}
+
+/* Events List */
+.events-list {
+    layout-mode: Top;
+    anchor-height: 140;
+    background-color: #1a1510;
+}
+
+.event-item {
+    layout-mode: Left;
+    anchor-height: 44;
+    background-color: transparent;
+    vertical-align: center;
+}
+
+.event-date {
+    layout-mode: Top;
+    anchor-width: 40;
+    horizontal-align: center;
+}
+
+.event-day {
+    color: #d4af37;
+    font-size: 14;
+    font-weight: bold;
+}
+
+.event-month {
+    color: #888;
+    font-size: 9;
+    text-transform: uppercase;
+}
+
+.event-info {
+    layout-mode: Top;
+    flex-weight: 1;
+}
+
+.event-name {
+    color: #ccc;
+    font-size: 11;
+}
+
+.event-time {
+    color: #888;
+    font-size: 9;
+}
+
+.event-rsvp {
+    anchor-width: 50;
+}
+
+.rsvp-btn {
+    anchor-width: 50; anchor-height: 20;
+    background-color: #3a5a40;
+    color: #9ddb9d;
+    font-size: 9;
+}
+
+.rsvp-btn.pending {
+    background-color: #5a5a3a;
+    color: #dbdb9d;
+}
+
+/* Treasury */
+.treasury-section {
+    layout-mode: Top;
+    flex-weight: 1;
+}
+
+.treasury-summary {
+    layout-mode: Top;
+    background-color: #1a1510;
+}
+
+.treasury-row {
+    layout-mode: Left;
+    anchor-height: 28;
+    vertical-align: center;
+}
+
+.treasury-label {
+    color: #888;
+    font-size: 10;
+    anchor-width: 80;
+}
+
+.treasury-value {
+    color: #d4af37;
+    font-size: 12;
+    font-weight: bold;
+}
+
+.treasury-value.silver {
+    color: #c0c0c0;
+}
+
+.treasury-value.copper {
+    color: #cd7f32;
+}
+
+.bank-tabs {
+    layout-mode: Left;
+    anchor-height: 28;
+    background-color: #201a14;
+}
+
+.bank-tab {
+    anchor-height: 28;
+    background-color: transparent;
+    color: #888;
+    font-size: 10;
+}
+
+.bank-tab.active {
+    background-color: #252015;
+    color: #d4af37;
+}
+
+.bank-grid {
+    layout-mode: Left;
+    flex-weight: 1;
+    background-color: #1a1510;
+    horizontal-align: center;
+}
+
+.bank-slot {
+    anchor-width: 36; anchor-height: 36;
+    background-color: #252015;
+}
+
+.bank-slot.locked {
+    background-color: #1a1510;
+}
+
+.locked-icon {
+    color: #666;
+    font-size: 12;
+}
+
+.bank-slot-icon {
+    anchor-width: 32; anchor-height: 32;
+}
+
+.bank-slot-count {
+    color: #fff;
+    font-size: 9;
+}
+
+.bank-actions {
+    layout-mode: Left;
+    anchor-height: 36;
+    background-color: #252015;
+    horizontal-align: center;
+    vertical-align: center;
+}
+
+.bank-btn {
+    anchor-height: 24;
+    background-color: #3a3530;
+    color: #ccc;
+    font-size: 10;
+}
+</style>
+
+<div class="guild-page">
+    
+    <!-- Left: Guild Overview -->
+    <div class="guild-overview">
+        
+        <div class="guild-banner">
+            <div class="guild-emblem">
+                <p>{{$guildEmblem}}</p>
+            </div>
+            <p class="guild-name">{{$guildName}}</p>
+            <p class="guild-tag">&lt;{{$guildTag}}&gt;</p>
+        </div>
+        
+        <div class="guild-stats">
+            <div class="stat-row">
+                <p class="stat-label">Level</p>
+                <p class="stat-value highlight">{{$guildLevel}}</p>
+            </div>
+            <div class="stat-row alt">
+                <p class="stat-label">Members</p>
+                <p class="stat-value">{{$memberCount}}/{{$memberMax}}</p>
+            </div>
+            <div class="stat-row">
+                <p class="stat-label">Created</p>
+                <p class="stat-value">{{$createdDate}}</p>
+            </div>
+            <div class="stat-row alt">
+                <p class="stat-label">Faction</p>
+                <p class="stat-value">{{$faction}}</p>
+            </div>
+            <div class="stat-row">
+                <p class="stat-label">Your Rank</p>
+                <p class="stat-value highlight">{{$playerRank}}</p>
+            </div>
+        </div>
+        
+        <div class="guild-motd">
+            <div class="motd-header">
+                <p class="motd-title">Message of the Day</p>
+            </div>
+            <div class="motd-content">
+                <p class="motd-text">{{$motd}}</p>
+            </div>
+        </div>
+        
+        <div class="guild-actions">
+            {{#if $canEditMotd}}
+            <button class="guild-btn" id="btn-edit-motd">Edit MOTD</button>
+            {{/if}}
+            <button class="guild-btn leave" id="btn-leave-guild">Leave Guild</button>
+        </div>
+        
+    </div>
+    
+    <!-- Center: Roster -->
+    <div class="guild-roster">
+        
+        <div class="roster-header">
+            <p class="roster-title">ROSTER</p>
+            <div style="flex-weight: 1;"></div>
+            <p class="roster-count">{{$onlineMembers}} Online</p>
+        </div>
+        
+        <div class="roster-tabs">
+            <button class="roster-tab active" id="tab-all">All</button>
+            <button class="roster-tab" id="tab-online">Online</button>
+            <button class="roster-tab" id="tab-officers">Officers</button>
+            {{#if $isOfficer}}
+            <button class="roster-tab" id="tab-applications">Applications ({{$applicationCount}})</button>
+            {{/if}}
+        </div>
+        
+        <div class="roster-table">
+            <div class="roster-columns">
+                <p class="column-header col-name">Name</p>
+                <p class="column-header col-rank">Rank</p>
+                <p class="column-header col-level">Lvl</p>
+                <p class="column-header col-class">Class</p>
+                <p class="column-header col-note">Note</p>
+                <p class="column-header col-status">Status</p>
+                <p class="column-header col-actions"></p>
+            </div>
+            
+            <div class="roster-list">
+                {{#each $members}}
+                <div class="member-row{{#if $isAlt}} alt{{/if}}{{#if $selected}} selected{{/if}}{{#unless $isOnline}} offline{{/unless}}" 
+                     id="member-{{$id}}" data-member-id="{{$id}}">
+                    <div class="member-name-col">
+                        <div class="online-dot{{#unless $isOnline}} offline{{/unless}}"></div>
+                        <p class="member-name">{{$name}}</p>
+                    </div>
+                    <p class="member-rank {{$rankClass}}">{{$rank}}</p>
+                    <p class="member-level">{{$level}}</p>
+                    <p class="member-class">{{$class}}</p>
+                    <p class="member-note">{{$note}}</p>
+                    <div class="member-status">
+                        {{#if $isOnline}}
+                        <p class="status-text online">Online</p>
+                        {{else}}
+                        <p class="status-text offline">{{$lastSeen}}</p>
+                        {{/if}}
+                    </div>
+                    <div class="member-actions">
+                        {{#if $isOnline}}
+                        <button class="action-btn-sm" id="whisper-{{$id}}">✉️</button>
+                        <button class="action-btn-sm" id="invite-{{$id}}">⚔️</button>
+                        {{/if}}
+                        {{#if $canManage}}
+                        <button class="action-btn-sm" id="manage-{{$id}}">⚙️</button>
+                        {{/if}}
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+        
+    </div>
+    
+    <!-- Right: Events & Bank -->
+    <div class="guild-sidebar">
+        
+        <!-- Events Section -->
+        <div class="sidebar-section">
+            <div class="sidebar-header">
+                <p class="sidebar-title">EVENTS</p>
+                <div style="flex-weight: 1;"></div>
+                {{#if $upcomingEvents}}
+                <p class="sidebar-badge">{{$eventCount}}</p>
+                {{/if}}
+            </div>
+            
+            <div class="events-list">
+                {{#each $events}}
+                <div class="event-item" id="event-{{$id}}">
+                    <div class="event-date">
+                        <p class="event-day">{{$day}}</p>
+                        <p class="event-month">{{$month}}</p>
+                    </div>
+                    <div class="event-info">
+                        <p class="event-name">{{$name}}</p>
+                        <p class="event-time">{{$time}} • {{$attendees}} signed up</p>
+                    </div>
+                    <div class="event-rsvp">
+                        <button class="rsvp-btn{{#if $isPending}} pending{{/if}}" id="rsvp-{{$id}}">
+                            {{#if $isAttending}}Joined{{else}}Join{{/if}}
+                        </button>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+            
+            {{#if $canCreateEvent}}
+            <div style="anchor-height: 36; background-color: #1a1510; horizontal-align: center; vertical-align: center;">
+                <button class="guild-btn" id="btn-create-event">+ Create Event</button>
+            </div>
+            {{/if}}
+        </div>
+        
+        <!-- Treasury Section -->
+        <div class="treasury-section">
+            <div class="sidebar-header">
+                <p class="sidebar-title">TREASURY</p>
+            </div>
+            
+            <div class="treasury-summary">
+                <div class="treasury-row">
+                    <p class="treasury-label">Gold</p>
+                    <p class="treasury-value">{{$treasuryGold}}</p>
+                </div>
+                <div class="treasury-row">
+                    <p class="treasury-label">Silver</p>
+                    <p class="treasury-value silver">{{$treasurySilver}}</p>
+                </div>
+                <div class="treasury-row">
+                    <p class="treasury-label">Copper</p>
+                    <p class="treasury-value copper">{{$treasuryCopper}}</p>
+                </div>
+            </div>
+            
+            <div class="bank-tabs">
+                {{#each $bankTabs}}
+                <button class="bank-tab{{#if $active}} active{{/if}}" id="bank-tab-{{$index}}">{{$name}}</button>
+                {{/each}}
+            </div>
+            
+            <div class="bank-grid">
+                {{#each $bankSlots}}
+                <div class="bank-slot{{#if $locked}} locked{{/if}}" id="bank-{{$index}}" data-slot="{{$index}}">
+                    {{#if $locked}}
+                    <p class="locked-icon">🔒</p>
+                    {{else}}
+                    {{#if $hasItem}}
+                    <img class="bank-slot-icon" src="{{$icon}}" />
+                    {{#if $count}}
+                    <p class="bank-slot-count">{{$count}}</p>
+                    {{/if}}
+                    {{/if}}
+                    {{/if}}
+                </div>
+                {{/each}}
+            </div>
+            
+            <div class="bank-actions">
+                {{#if $canDeposit}}
+                <button class="bank-btn" id="btn-deposit">Deposit</button>
+                {{/if}}
+                {{#if $canWithdraw}}
+                <button class="bank-btn" id="btn-withdraw">Withdraw</button>
+                {{/if}}
+            </div>
+        </div>
+        
+    </div>
+    
+</div>

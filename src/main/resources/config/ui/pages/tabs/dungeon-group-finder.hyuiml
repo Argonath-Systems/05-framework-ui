@@ -1,0 +1,850 @@
+<!--
+    Group Finder Sub-Page
+    Reference: VDD-MISC-017-dungeons-001-group-finder.md
+    
+    Parent Tab: Dungeon
+    Features: Dungeon queue, role selection, group listings, LFG
+-->
+
+<style>
+.group-finder-page {
+    layout-mode: Left;
+    flex-weight: 1;
+}
+
+/* Left Panel - Queue & Filters */
+.queue-panel {
+    layout-mode: Top;
+    anchor-width: 260;
+    background-color: #1e1812;
+}
+
+.queue-header {
+    anchor-height: 40;
+    background-color: #252015;
+    vertical-align: center;
+}
+
+.queue-title {
+    color: #d4af37;
+    font-size: 14;
+    font-weight: bold;
+}
+
+/* Role Selection */
+.role-section {
+    layout-mode: Top;
+    background-color: #1a1510;
+}
+
+.role-header {
+    anchor-height: 28;
+    background-color: #201a14;
+    vertical-align: center;
+}
+
+.role-title {
+    color: #888;
+    font-size: 10;
+    text-transform: uppercase;
+}
+
+.role-options {
+    layout-mode: Left;
+    anchor-height: 60;
+    horizontal-align: center;
+    vertical-align: center;
+}
+
+.role-btn {
+    layout-mode: Top;
+    anchor-width: 60; anchor-height: 50;
+    background-color: #252015;
+    horizontal-align: center;
+    vertical-align: center;
+}
+
+.role-btn.selected {
+    background-color: rgba(212, 175, 55, 0.2);
+}
+
+.role-btn.disabled {
+    background-color: #1a1510;
+    color: #444;
+}
+
+.role-icon {
+    font-size: 20;
+}
+
+.role-icon.tank { color: #5a9ddb; }
+.role-icon.healer { color: #5adb5a; }
+.role-icon.dps { color: #db5a5a; }
+
+.role-label {
+    color: #888;
+    font-size: 9;
+}
+
+/* Dungeon Selection */
+.dungeon-section {
+    layout-mode: Top;
+    flex-weight: 1;
+}
+
+.dungeon-header {
+    anchor-height: 28;
+    background-color: #201a14;
+    vertical-align: center;
+}
+
+.dungeon-title {
+    color: #888;
+    font-size: 10;
+    text-transform: uppercase;
+}
+
+.dungeon-tabs {
+    layout-mode: Left;
+    anchor-height: 28;
+    background-color: #1a1510;
+}
+
+.dungeon-tab {
+    anchor-height: 28;
+    background-color: transparent;
+    color: #888;
+    font-size: 10;
+}
+
+.dungeon-tab.active {
+    background-color: #252015;
+    color: #d4af37;
+}
+
+.dungeon-list {
+    layout-mode: Top;
+    flex-weight: 1;
+    background-color: #1a1510;
+}
+
+.dungeon-item {
+    layout-mode: Left;
+    anchor-height: 48;
+    background-color: transparent;
+    vertical-align: center;
+}
+
+.dungeon-item.selected {
+    background-color: rgba(212, 175, 55, 0.1);
+}
+
+.dungeon-item.locked {
+    color: #666;
+}
+
+.dungeon-checkbox {
+    anchor-width: 18; anchor-height: 18;
+    background-color: #252015;
+}
+
+.dungeon-checkbox.checked {
+    background-color: #3a5a40;
+}
+
+.check-mark {
+    color: #9ddb9d;
+    font-size: 11;
+}
+
+.dungeon-icon {
+    anchor-width: 32; anchor-height: 32;
+    background-color: #333;
+}
+
+.dungeon-info {
+    layout-mode: Top;
+    flex-weight: 1;
+}
+
+.dungeon-name {
+    color: #ccc;
+    font-size: 11;
+}
+
+.dungeon-name.locked {
+    color: #666;
+}
+
+.dungeon-meta {
+    color: #888;
+    font-size: 9;
+}
+
+.difficulty-badge {
+    font-size: 9;
+    anchor-height: 16;
+}
+
+.difficulty-badge.normal { background-color: #3a5a40; color: #9ddb9d; }
+.difficulty-badge.heroic { background-color: #5a5a3a; color: #dbdb9d; }
+.difficulty-badge.mythic { background-color: #5a3a5a; color: #db9ddb; }
+
+/* Queue Status */
+.queue-status {
+    layout-mode: Top;
+    anchor-height: 100;
+    background-color: #252015;
+}
+
+.queue-status-active {
+    layout-mode: Top;
+    flex-weight: 1;
+    horizontal-align: center;
+    vertical-align: center;
+}
+
+.queue-timer {
+    color: #d4af37;
+    font-size: 24;
+    font-weight: bold;
+}
+
+.queue-info {
+    color: #888;
+    font-size: 11;
+}
+
+.queue-roles {
+    layout-mode: Left;
+    horizontal-align: center;
+}
+
+.queue-role-status {
+    layout-mode: Left;
+    vertical-align: center;
+}
+
+.role-dot {
+    anchor-width: 8; anchor-height: 8;
+}
+
+.role-dot.found { background-color: #5adb5a; }
+.role-dot.searching { background-color: #dbdb5a; }
+.role-dot.needed { background-color: #666; }
+
+.role-status-label {
+    color: #888;
+    font-size: 9;
+}
+
+.queue-btn {
+    anchor-height: 36;
+    background-color: #3a5a40;
+    color: #9ddb9d;
+    font-size: 13;
+    font-weight: bold;
+}
+
+.queue-btn.cancel {
+    background-color: #5a3a30;
+    color: #db9d9d;
+}
+
+.queue-btn.disabled {
+    background-color: #3a3530;
+    color: #666;
+}
+
+/* Center Panel - Group Listings */
+.listings-panel {
+    layout-mode: Top;
+    flex-weight: 1;
+}
+
+.listings-header {
+    layout-mode: Left;
+    anchor-height: 40;
+    background-color: #252015;
+    vertical-align: center;
+}
+
+.listings-title {
+    color: #d4af37;
+    font-size: 14;
+    font-weight: bold;
+}
+
+.listings-count {
+    color: #888;
+    font-size: 11;
+}
+
+.refresh-btn {
+    anchor-height: 28;
+    background-color: #3a3530;
+    color: #ccc;
+    font-size: 11;
+}
+
+.listings-toolbar {
+    layout-mode: Left;
+    anchor-height: 36;
+    background-color: #1e1812;
+    vertical-align: center;
+}
+
+.search-input {
+    anchor-width: 200; anchor-height: 28;
+    background-color: #2a2520;
+    color: #ccc;
+    font-size: 11;
+}
+
+.filter-dropdown {
+    anchor-height: 28;
+    background-color: #2a2520;
+    color: #ccc;
+    font-size: 10;
+}
+
+/* Listings Table */
+.listings-table {
+    layout-mode: Top;
+    flex-weight: 1;
+}
+
+.listings-columns {
+    layout-mode: Left;
+    anchor-height: 28;
+    background-color: #201a14;
+}
+
+.column-header {
+    color: #888;
+    font-size: 9;
+    text-transform: uppercase;
+}
+
+.col-dungeon { anchor-width: 180; }
+.col-leader { anchor-width: 120; }
+.col-roles { anchor-width: 100; }
+.col-ilvl { anchor-width: 60; }
+.col-note { flex-weight: 1; }
+.col-actions { anchor-width: 80; }
+
+.listings-list {
+    layout-mode: Top;
+    flex-weight: 1;
+    background-color: #1a1510;
+}
+
+.listing-row {
+    layout-mode: Left;
+    anchor-height: 44;
+    background-color: transparent;
+    vertical-align: center;
+}
+
+.listing-row.alt {
+    background-color: #1e1812;
+}
+
+.listing-row.selected {
+    background-color: rgba(212, 175, 55, 0.15);
+}
+
+.listing-dungeon {
+    layout-mode: Left;
+    anchor-width: 180;
+    vertical-align: center;
+}
+
+.listing-dungeon-icon {
+    anchor-width: 28; anchor-height: 28;
+    background-color: #333;
+}
+
+.listing-dungeon-name {
+    color: #ccc;
+    font-size: 11;
+}
+
+.listing-leader {
+    color: #9d9ddb;
+    font-size: 11;
+    anchor-width: 120;
+}
+
+.listing-roles {
+    layout-mode: Left;
+    anchor-width: 100;
+}
+
+.role-slot {
+    anchor-width: 20; anchor-height: 20;
+    background-color: #252015;
+    horizontal-align: center;
+    vertical-align: center;
+}
+
+.role-slot.filled {
+    background-color: #3a5a40;
+}
+
+.role-slot-icon {
+    font-size: 10;
+}
+
+.listing-ilvl {
+    color: #888;
+    font-size: 10;
+    anchor-width: 60;
+}
+
+.listing-note {
+    color: #666;
+    font-size: 10;
+    flex-weight: 1;
+}
+
+.listing-actions {
+    layout-mode: Left;
+    anchor-width: 80;
+}
+
+.apply-btn {
+    anchor-height: 24;
+    background-color: #3a5a40;
+    color: #9ddb9d;
+    font-size: 10;
+}
+
+.apply-btn.pending {
+    background-color: #5a5a3a;
+    color: #dbdb9d;
+}
+
+/* Right Panel - Create Group */
+.create-panel {
+    layout-mode: Top;
+    anchor-width: 240;
+    background-color: #1e1812;
+}
+
+.create-header {
+    anchor-height: 40;
+    background-color: #252015;
+    vertical-align: center;
+}
+
+.create-title {
+    color: #d4af37;
+    font-size: 14;
+    font-weight: bold;
+}
+
+.create-form {
+    layout-mode: Top;
+    flex-weight: 1;
+    background-color: #1a1510;
+}
+
+.form-group {
+    layout-mode: Top;
+}
+
+.form-label {
+    color: #888;
+    font-size: 10;
+    anchor-height: 24;
+    vertical-align: center;
+}
+
+.form-input {
+    anchor-height: 28;
+    background-color: #252015;
+    color: #ccc;
+    font-size: 11;
+}
+
+.form-textarea {
+    anchor-height: 60;
+    background-color: #252015;
+    color: #ccc;
+    font-size: 10;
+}
+
+.form-select {
+    anchor-height: 28;
+    background-color: #252015;
+    color: #ccc;
+    font-size: 11;
+}
+
+/* Role Requirements */
+.role-requirements {
+    layout-mode: Top;
+}
+
+.role-req-row {
+    layout-mode: Left;
+    anchor-height: 32;
+    vertical-align: center;
+}
+
+.role-req-icon {
+    font-size: 14;
+    anchor-width: 24;
+}
+
+.role-req-label {
+    color: #888;
+    font-size: 10;
+    anchor-width: 60;
+}
+
+.role-req-spinner {
+    layout-mode: Left;
+}
+
+.spinner-btn {
+    anchor-width: 24; anchor-height: 24;
+    background-color: #252015;
+    color: #ccc;
+    font-size: 12;
+}
+
+.spinner-value {
+    anchor-width: 24;
+    color: #ccc;
+    font-size: 11;
+    horizontal-align: center;
+}
+
+/* Settings */
+.settings-section {
+    layout-mode: Top;
+}
+
+.setting-row {
+    layout-mode: Left;
+    anchor-height: 32;
+    vertical-align: center;
+}
+
+.setting-checkbox {
+    anchor-width: 16; anchor-height: 16;
+    background-color: #252015;
+}
+
+.setting-checkbox.checked {
+    background-color: #3a5a40;
+}
+
+.setting-label {
+    color: #ccc;
+    font-size: 10;
+}
+
+/* Create Actions */
+.create-actions {
+    layout-mode: Top;
+    anchor-height: 80;
+    background-color: #252015;
+    horizontal-align: center;
+    vertical-align: center;
+}
+
+.create-btn {
+    anchor-height: 36;
+    background-color: #3a5a40;
+    color: #9ddb9d;
+    font-size: 12;
+    font-weight: bold;
+}
+
+.create-btn.disabled {
+    background-color: #3a3530;
+    color: #666;
+}
+
+.or-divider {
+    color: #666;
+    font-size: 10;
+}
+
+.solo-btn {
+    anchor-height: 28;
+    background-color: #3a3530;
+    color: #ccc;
+    font-size: 11;
+}
+</style>
+
+<div class="group-finder-page">
+    
+    <!-- Left: Queue & Filters -->
+    <div class="queue-panel">
+        
+        <div class="queue-header">
+            <p class="queue-title">DUNGEON FINDER</p>
+        </div>
+        
+        <!-- Role Selection -->
+        <div class="role-section">
+            <div class="role-header">
+                <p class="role-title">Your Role</p>
+            </div>
+            
+            <div class="role-options">
+                <div class="role-btn{{#if $tankSelected}} selected{{/if}}{{#unless $canTank}} disabled{{/unless}}" id="role-tank">
+                    <p class="role-icon tank">🛡️</p>
+                    <p class="role-label">Tank</p>
+                </div>
+                <div class="role-btn{{#if $healerSelected}} selected{{/if}}{{#unless $canHeal}} disabled{{/unless}}" id="role-healer">
+                    <p class="role-icon healer">💚</p>
+                    <p class="role-label">Healer</p>
+                </div>
+                <div class="role-btn{{#if $dpsSelected}} selected{{/if}}" id="role-dps">
+                    <p class="role-icon dps">⚔️</p>
+                    <p class="role-label">DPS</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dungeon Selection -->
+        <div class="dungeon-section">
+            <div class="dungeon-header">
+                <p class="dungeon-title">Select Dungeons</p>
+            </div>
+            
+            <div class="dungeon-tabs">
+                <button class="dungeon-tab{{#if $showNormal}} active{{/if}}" id="tab-normal">Normal</button>
+                <button class="dungeon-tab{{#if $showHeroic}} active{{/if}}" id="tab-heroic">Heroic</button>
+                <button class="dungeon-tab{{#if $showMythic}} active{{/if}}" id="tab-mythic">Mythic</button>
+            </div>
+            
+            <div class="dungeon-list">
+                {{#each $dungeons}}
+                <div class="dungeon-item{{#if $selected}} selected{{/if}}{{#if $locked}} locked{{/if}}" 
+                     id="dungeon-{{$id}}" data-dungeon-id="{{$id}}">
+                    <div class="dungeon-checkbox{{#if $selected}} checked{{/if}}">
+                        {{#if $selected}}<p class="check-mark">✓</p>{{/if}}
+                    </div>
+                    <div class="dungeon-icon">
+                        <p>{{$icon}}</p>
+                    </div>
+                    <div class="dungeon-info">
+                        <p class="dungeon-name{{#if $locked}} locked{{/if}}">{{$name}}</p>
+                        <p class="dungeon-meta">Lvl {{$minLevel}}+ • {{$bosses}} bosses</p>
+                    </div>
+                    <p class="difficulty-badge {{$difficulty}}">{{$difficultyLabel}}</p>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+        
+        <!-- Queue Status -->
+        <div class="queue-status">
+            {{#if $inQueue}}
+            <div class="queue-status-active">
+                <p class="queue-timer">{{$queueTime}}</p>
+                <p class="queue-info">Average wait: {{$avgWait}}</p>
+                <div class="queue-roles">
+                    <div class="queue-role-status">
+                        <div class="role-dot {{$tankStatus}}"></div>
+                        <p class="role-status-label">Tank</p>
+                    </div>
+                    <div class="queue-role-status">
+                        <div class="role-dot {{$healerStatus}}"></div>
+                        <p class="role-status-label">Healer</p>
+                    </div>
+                    <div class="queue-role-status">
+                        <div class="role-dot {{$dpsStatus}}"></div>
+                        <p class="role-status-label">DPS</p>
+                    </div>
+                </div>
+            </div>
+            <button class="queue-btn cancel" id="btn-leave-queue">Leave Queue</button>
+            {{else}}
+            <button class="queue-btn{{#unless $canQueue}} disabled{{/unless}}" id="btn-join-queue">
+                {{#if $canQueue}}Join Queue{{else}}Select Role & Dungeon{{/if}}
+            </button>
+            {{/if}}
+        </div>
+        
+    </div>
+    
+    <!-- Center: Group Listings -->
+    <div class="listings-panel">
+        
+        <div class="listings-header">
+            <p class="listings-title">GROUP LISTINGS</p>
+            <div style="flex-weight: 1;"></div>
+            <p class="listings-count">{{$listingCount}} groups</p>
+            <button class="refresh-btn" id="btn-refresh">Refresh</button>
+        </div>
+        
+        <div class="listings-toolbar">
+            <input id="listing-search" class="search-input" placeholder="Search groups..." />
+            <select id="filter-dungeon" class="filter-dropdown">
+                <option value="">All Dungeons</option>
+                {{#each $dungeonOptions}}
+                <option value="{{$id}}">{{$name}}</option>
+                {{/each}}
+            </select>
+            <select id="filter-role" class="filter-dropdown">
+                <option value="">Any Role</option>
+                <option value="tank">Need Tank</option>
+                <option value="healer">Need Healer</option>
+                <option value="dps">Need DPS</option>
+            </select>
+        </div>
+        
+        <div class="listings-table">
+            <div class="listings-columns">
+                <p class="column-header col-dungeon">Dungeon</p>
+                <p class="column-header col-leader">Leader</p>
+                <p class="column-header col-roles">Roles</p>
+                <p class="column-header col-ilvl">iLvl</p>
+                <p class="column-header col-note">Note</p>
+                <p class="column-header col-actions"></p>
+            </div>
+            
+            <div class="listings-list">
+                {{#each $listings}}
+                <div class="listing-row{{#if $isAlt}} alt{{/if}}{{#if $selected}} selected{{/if}}" 
+                     id="listing-{{$id}}" data-listing-id="{{$id}}">
+                    <div class="listing-dungeon">
+                        <div class="listing-dungeon-icon">
+                            <p>{{$dungeonIcon}}</p>
+                        </div>
+                        <p class="listing-dungeon-name">{{$dungeonName}}</p>
+                    </div>
+                    <p class="listing-leader">{{$leaderName}}</p>
+                    <div class="listing-roles">
+                        {{#each $roleSlots}}
+                        <div class="role-slot{{#if $filled}} filled{{/if}}">
+                            <p class="role-slot-icon">{{$icon}}</p>
+                        </div>
+                        {{/each}}
+                    </div>
+                    <p class="listing-ilvl">{{$requiredIlvl}}+</p>
+                    <p class="listing-note">{{$note}}</p>
+                    <div class="listing-actions">
+                        {{#if $applied}}
+                        <button class="apply-btn pending" disabled>Pending</button>
+                        {{else}}
+                        <button class="apply-btn" id="apply-{{$id}}">Apply</button>
+                        {{/if}}
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+        
+    </div>
+    
+    <!-- Right: Create Group -->
+    <div class="create-panel">
+        
+        <div class="create-header">
+            <p class="create-title">CREATE GROUP</p>
+        </div>
+        
+        <div class="create-form">
+            
+            <div class="form-group">
+                <p class="form-label">Dungeon</p>
+                <select id="create-dungeon" class="form-select">
+                    <option value="">Select Dungeon...</option>
+                    {{#each $dungeonOptions}}
+                    <option value="{{$id}}">{{$name}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <p class="form-label">Difficulty</p>
+                <select id="create-difficulty" class="form-select">
+                    <option value="normal">Normal</option>
+                    <option value="heroic">Heroic</option>
+                    <option value="mythic">Mythic</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <p class="form-label">Group Note</p>
+                <textarea id="create-note" class="form-textarea" placeholder="Describe your group..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <p class="form-label">Required Item Level</p>
+                <input id="create-ilvl" class="form-input" type="number" value="{{$defaultIlvl}}" />
+            </div>
+            
+            <!-- Role Requirements -->
+            <div class="role-requirements">
+                <p class="form-label">Roles Needed</p>
+                
+                <div class="role-req-row">
+                    <p class="role-req-icon" style="color: #5a9ddb;">🛡️</p>
+                    <p class="role-req-label">Tanks</p>
+                    <div class="role-req-spinner">
+                        <button class="spinner-btn" id="tank-minus">−</button>
+                        <p class="spinner-value">{{$tanksNeeded}}</p>
+                        <button class="spinner-btn" id="tank-plus">+</button>
+                    </div>
+                </div>
+                
+                <div class="role-req-row">
+                    <p class="role-req-icon" style="color: #5adb5a;">💚</p>
+                    <p class="role-req-label">Healers</p>
+                    <div class="role-req-spinner">
+                        <button class="spinner-btn" id="healer-minus">−</button>
+                        <p class="spinner-value">{{$healersNeeded}}</p>
+                        <button class="spinner-btn" id="healer-plus">+</button>
+                    </div>
+                </div>
+                
+                <div class="role-req-row">
+                    <p class="role-req-icon" style="color: #db5a5a;">⚔️</p>
+                    <p class="role-req-label">DPS</p>
+                    <div class="role-req-spinner">
+                        <button class="spinner-btn" id="dps-minus">−</button>
+                        <p class="spinner-value">{{$dpsNeeded}}</p>
+                        <button class="spinner-btn" id="dps-plus">+</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Settings -->
+            <div class="settings-section">
+                <div class="setting-row">
+                    <div class="setting-checkbox{{#if $autoAccept}} checked{{/if}}" id="setting-auto-accept">
+                        {{#if $autoAccept}}<p style="color: #9ddb9d; font-size: 10;">✓</p>{{/if}}
+                    </div>
+                    <p class="setting-label">Auto-accept if requirements met</p>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-checkbox{{#if $friendsOnly}} checked{{/if}}" id="setting-friends-only">
+                        {{#if $friendsOnly}}<p style="color: #9ddb9d; font-size: 10;">✓</p>{{/if}}
+                    </div>
+                    <p class="setting-label">Friends & guild only</p>
+                </div>
+            </div>
+            
+        </div>
+        
+        <div class="create-actions">
+            <button class="create-btn{{#unless $canCreate}} disabled{{/unless}}" id="btn-create-group">
+                Create Listing
+            </button>
+            <p class="or-divider">— or —</p>
+            <button class="solo-btn" id="btn-solo-queue">Solo Queue</button>
+        </div>
+        
+    </div>
+    
+</div>

@@ -1,0 +1,685 @@
+<!--
+    World Map Sub-Page
+    Reference: HLR-WORLD-024-world-map-ui.md, VDD-LAYOUT-003
+    
+    Parent Tab: Map
+    Features: Zoomable world map, region discovery, waypoints, markers
+-->
+
+<style>
+.map-page {
+    layout-mode: Left;
+    flex-weight: 1;
+}
+
+/* Map Controls Panel */
+.map-controls {
+    layout-mode: Top;
+    anchor-width: 200;
+    background-color: #1e1812;
+}
+
+.controls-header {
+    anchor-height: 40;
+    background-color: #252015;
+    vertical-align: center;
+}
+
+.controls-title {
+    color: #d4af37;
+    font-size: 14;
+    font-weight: bold;
+}
+
+/* Filter Section */
+.filter-section {
+    layout-mode: Top;
+}
+
+.filter-header {
+    anchor-height: 28;
+    background-color: #201a14;
+    vertical-align: center;
+}
+
+.filter-title {
+    color: #888;
+    font-size: 10;
+    text-transform: uppercase;
+}
+
+.filter-options {
+    layout-mode: Top;
+    background-color: #1a1510;
+}
+
+.filter-option {
+    layout-mode: Left;
+    anchor-height: 28;
+    vertical-align: center;
+}
+
+.filter-checkbox {
+    anchor-width: 16; anchor-height: 16;
+    background-color: #252015;
+}
+
+.filter-checkbox.checked {
+    background-color: #3a5a40;
+}
+
+.check-icon {
+    color: #9ddb9d;
+    font-size: 10;
+}
+
+.filter-label {
+    color: #ccc;
+    font-size: 11;
+}
+
+.filter-icon {
+    color: #888;
+    font-size: 12;
+}
+
+/* Waypoints Section */
+.waypoints-section {
+    layout-mode: Top;
+    flex-weight: 1;
+}
+
+.waypoints-list {
+    layout-mode: Top;
+    flex-weight: 1;
+    background-color: #1a1510;
+}
+
+.waypoint-item {
+    layout-mode: Left;
+    anchor-height: 40;
+    background-color: transparent;
+    vertical-align: center;
+}
+
+.waypoint-item.selected {
+    background-color: rgba(212, 175, 55, 0.1);
+}
+
+.waypoint-icon {
+    anchor-width: 24; anchor-height: 24;
+    horizontal-align: center;
+    vertical-align: center;
+}
+
+.waypoint-icon.quest {
+    color: #d4af37;
+}
+
+.waypoint-icon.poi {
+    color: #9d9ddb;
+}
+
+.waypoint-icon.custom {
+    color: #9ddb9d;
+}
+
+.waypoint-info {
+    layout-mode: Top;
+    flex-weight: 1;
+}
+
+.waypoint-name {
+    color: #ccc;
+    font-size: 11;
+}
+
+.waypoint-distance {
+    color: #888;
+    font-size: 9;
+}
+
+.waypoint-actions {
+    layout-mode: Left;
+}
+
+.waypoint-btn {
+    anchor-width: 24; anchor-height: 24;
+    background-color: transparent;
+    color: #888;
+    font-size: 11;
+}
+
+.waypoint-btn.track {
+    color: #d4af37;
+}
+
+/* Waypoint Actions Footer */
+.waypoints-footer {
+    layout-mode: Left;
+    anchor-height: 36;
+    background-color: #252015;
+    horizontal-align: center;
+    vertical-align: center;
+}
+
+.waypoint-add-btn {
+    anchor-height: 24;
+    background-color: #3a5a40;
+    color: #9ddb9d;
+    font-size: 10;
+}
+
+/* Map View */
+.map-view {
+    layout-mode: Top;
+    flex-weight: 1;
+    background-color: #0a0a0a;
+}
+
+.map-toolbar {
+    layout-mode: Left;
+    anchor-height: 40;
+    background-color: #1e1812;
+    vertical-align: center;
+}
+
+.map-title {
+    color: #d4af37;
+    font-size: 14;
+    font-weight: bold;
+}
+
+.map-coords {
+    color: #888;
+    font-size: 10;
+}
+
+.zoom-controls {
+    layout-mode: Left;
+}
+
+.zoom-btn {
+    anchor-width: 28; anchor-height: 28;
+    background-color: #252015;
+    color: #ccc;
+    font-size: 14;
+}
+
+.zoom-level {
+    color: #888;
+    font-size: 10;
+    anchor-width: 40;
+    horizontal-align: center;
+}
+
+/* Map Canvas Area */
+.map-canvas {
+    layout-mode: Top;
+    flex-weight: 1;
+    background-color: #1a1a1a;
+}
+
+.map-image {
+    flex-weight: 1;
+    background-color: #1a1a1a;
+}
+
+/* Map Markers (overlaid on map) */
+.marker {
+    anchor-width: 20; anchor-height: 20;
+    background-color: transparent;
+}
+
+.marker-icon {
+    font-size: 16;
+}
+
+.marker-icon.player {
+    color: #5a9ddb;
+}
+
+.marker-icon.party {
+    color: #5adb5a;
+}
+
+.marker-icon.quest {
+    color: #d4af37;
+}
+
+.marker-icon.dungeon {
+    color: #db5a5a;
+}
+
+.marker-icon.city {
+    color: #9d9ddb;
+}
+
+.marker-icon.custom {
+    color: #9ddb9d;
+}
+
+/* Minimap Legend */
+.map-legend {
+    layout-mode: Left;
+    anchor-height: 32;
+    background-color: #1e1812;
+    horizontal-align: center;
+    vertical-align: center;
+}
+
+.legend-item {
+    layout-mode: Left;
+    vertical-align: center;
+}
+
+.legend-dot {
+    anchor-width: 8; anchor-height: 8;
+}
+
+.legend-dot.player { background-color: #5a9ddb; }
+.legend-dot.party { background-color: #5adb5a; }
+.legend-dot.quest { background-color: #d4af37; }
+.legend-dot.dungeon { background-color: #db5a5a; }
+.legend-dot.city { background-color: #9d9ddb; }
+
+.legend-label {
+    color: #888;
+    font-size: 9;
+}
+
+/* Region Info Panel */
+.region-info {
+    layout-mode: Top;
+    anchor-width: 220;
+    background-color: #1e1812;
+}
+
+.region-header {
+    layout-mode: Top;
+    anchor-height: 80;
+    background-color: #252015;
+    horizontal-align: center;
+    vertical-align: center;
+}
+
+.region-icon {
+    anchor-width: 40; anchor-height: 40;
+    background-color: #333;
+}
+
+.region-name {
+    color: #d4af37;
+    font-size: 14;
+    font-weight: bold;
+}
+
+.region-type {
+    color: #888;
+    font-size: 10;
+}
+
+.region-stats {
+    layout-mode: Top;
+}
+
+.region-stat-row {
+    layout-mode: Left;
+    anchor-height: 28;
+    background-color: #1a1510;
+    vertical-align: center;
+}
+
+.region-stat-row.alt {
+    background-color: #201a14;
+}
+
+.region-stat-label {
+    color: #888;
+    font-size: 10;
+    anchor-width: 90;
+}
+
+.region-stat-value {
+    color: #ccc;
+    font-size: 10;
+    flex-weight: 1;
+}
+
+.region-stat-value.danger {
+    color: #db9d9d;
+}
+
+.region-stat-value.safe {
+    color: #9ddb9d;
+}
+
+/* Discovery Progress */
+.discovery-section {
+    layout-mode: Top;
+}
+
+.discovery-header {
+    anchor-height: 28;
+    background-color: #201a14;
+    vertical-align: center;
+}
+
+.discovery-title {
+    color: #888;
+    font-size: 10;
+    text-transform: uppercase;
+}
+
+.discovery-progress {
+    layout-mode: Top;
+    background-color: #1a1510;
+}
+
+.discovery-bar-bg {
+    anchor-height: 6;
+    background-color: #333;
+}
+
+.discovery-bar-fill {
+    anchor-height: 6;
+    background-color: #d4af37;
+}
+
+.discovery-stats {
+    layout-mode: Left;
+    anchor-height: 24;
+    vertical-align: center;
+}
+
+.discovery-label {
+    color: #888;
+    font-size: 9;
+}
+
+.discovery-value {
+    color: #d4af37;
+    font-size: 10;
+}
+
+/* POI List */
+.poi-section {
+    layout-mode: Top;
+    flex-weight: 1;
+}
+
+.poi-header {
+    anchor-height: 28;
+    background-color: #201a14;
+    vertical-align: center;
+}
+
+.poi-title {
+    color: #888;
+    font-size: 10;
+    text-transform: uppercase;
+}
+
+.poi-list {
+    layout-mode: Top;
+    flex-weight: 1;
+    background-color: #1a1510;
+}
+
+.poi-item {
+    layout-mode: Left;
+    anchor-height: 32;
+    background-color: transparent;
+    vertical-align: center;
+}
+
+.poi-item.undiscovered {
+    color: #666;
+}
+
+.poi-icon-small {
+    color: #9d9ddb;
+    font-size: 12;
+    anchor-width: 24;
+    horizontal-align: center;
+}
+
+.poi-icon-small.undiscovered {
+    color: #444;
+}
+
+.poi-name {
+    color: #ccc;
+    font-size: 10;
+    flex-weight: 1;
+}
+
+.poi-name.undiscovered {
+    color: #666;
+}
+
+.poi-discovered-badge {
+    color: #9ddb9d;
+    font-size: 9;
+}
+
+/* Travel Actions */
+.travel-actions {
+    layout-mode: Top;
+    anchor-height: 80;
+    background-color: #252015;
+}
+
+.travel-btn {
+    anchor-height: 32;
+    background-color: #3a5a40;
+    color: #9ddb9d;
+    font-size: 12;
+}
+
+.travel-btn.disabled {
+    background-color: #3a3530;
+    color: #666;
+}
+
+.travel-cost {
+    color: #888;
+    font-size: 9;
+    horizontal-align: center;
+}
+</style>
+
+<div class="map-page">
+    
+    <!-- Left: Controls & Waypoints -->
+    <div class="map-controls">
+        
+        <div class="controls-header">
+            <p class="controls-title">MAP CONTROLS</p>
+        </div>
+        
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-header">
+                <p class="filter-title">Show on Map</p>
+            </div>
+            
+            <div class="filter-options">
+                {{#each $mapFilters}}
+                <div class="filter-option" id="filter-{{$id}}">
+                    <div class="filter-checkbox{{#if $enabled}} checked{{/if}}">
+                        {{#if $enabled}}<p class="check-icon">✓</p>{{/if}}
+                    </div>
+                    <p class="filter-icon">{{$icon}}</p>
+                    <p class="filter-label">{{$label}}</p>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+        
+        <!-- Waypoints Section -->
+        <div class="waypoints-section">
+            <div class="filter-header">
+                <p class="filter-title">Waypoints</p>
+            </div>
+            
+            <div class="waypoints-list">
+                {{#each $waypoints}}
+                <div class="waypoint-item{{#if $selected}} selected{{/if}}" id="waypoint-{{$id}}" data-waypoint-id="{{$id}}">
+                    <div class="waypoint-icon {{$type}}">
+                        <p>{{$icon}}</p>
+                    </div>
+                    <div class="waypoint-info">
+                        <p class="waypoint-name">{{$name}}</p>
+                        <p class="waypoint-distance">{{$distance}}</p>
+                    </div>
+                    <div class="waypoint-actions">
+                        <button class="waypoint-btn track" id="track-{{$id}}">◎</button>
+                        <button class="waypoint-btn" id="delete-{{$id}}">✕</button>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+            
+            <div class="waypoints-footer">
+                <button class="waypoint-add-btn" id="btn-add-waypoint">+ Add Waypoint</button>
+            </div>
+        </div>
+        
+    </div>
+    
+    <!-- Center: Map View -->
+    <div class="map-view">
+        
+        <div class="map-toolbar">
+            <p class="map-title">{{$regionName}}</p>
+            <div style="flex-weight: 1;"></div>
+            <p class="map-coords">{{$playerX}}, {{$playerY}}, {{$playerZ}}</p>
+            <div class="zoom-controls">
+                <button class="zoom-btn" id="btn-zoom-out">−</button>
+                <p class="zoom-level">{{$zoomLevel}}%</p>
+                <button class="zoom-btn" id="btn-zoom-in">+</button>
+            </div>
+        </div>
+        
+        <div class="map-canvas" id="map-canvas">
+            <!-- Map image rendered by adapter -->
+            <div class="map-image" id="map-image">
+                <!-- Dynamic markers overlaid here -->
+                {{#each $mapMarkers}}
+                <div class="marker" style="anchor-left: {{$x}}; anchor-top: {{$y}};" id="marker-{{$id}}">
+                    <p class="marker-icon {{$type}}">{{$icon}}</p>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+        
+        <div class="map-legend">
+            <div class="legend-item">
+                <div class="legend-dot player"></div>
+                <p class="legend-label">You</p>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot party"></div>
+                <p class="legend-label">Party</p>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot quest"></div>
+                <p class="legend-label">Quest</p>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot dungeon"></div>
+                <p class="legend-label">Dungeon</p>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot city"></div>
+                <p class="legend-label">City</p>
+            </div>
+        </div>
+        
+    </div>
+    
+    <!-- Right: Region Info -->
+    <div class="region-info">
+        
+        <div class="region-header">
+            <div class="region-icon">
+                <p>{{$regionIcon}}</p>
+            </div>
+            <p class="region-name">{{$regionName}}</p>
+            <p class="region-type">{{$regionType}}</p>
+        </div>
+        
+        <div class="region-stats">
+            <div class="region-stat-row">
+                <p class="region-stat-label">Level Range</p>
+                <p class="region-stat-value">{{$levelMin}} - {{$levelMax}}</p>
+            </div>
+            <div class="region-stat-row alt">
+                <p class="region-stat-label">Faction</p>
+                <p class="region-stat-value">{{$regionFaction}}</p>
+            </div>
+            <div class="region-stat-row">
+                <p class="region-stat-label">PvP Status</p>
+                <p class="region-stat-value {{$pvpClass}}">{{$pvpStatus}}</p>
+            </div>
+            <div class="region-stat-row alt">
+                <p class="region-stat-label">Weather</p>
+                <p class="region-stat-value">{{$currentWeather}}</p>
+            </div>
+        </div>
+        
+        <!-- Discovery Progress -->
+        <div class="discovery-section">
+            <div class="discovery-header">
+                <p class="discovery-title">Discovery</p>
+            </div>
+            
+            <div class="discovery-progress">
+                <div class="discovery-bar-bg">
+                    <div class="discovery-bar-fill" style="anchor-width: {{$discoveryPercent}}%;"></div>
+                </div>
+                <div class="discovery-stats">
+                    <p class="discovery-label">Explored: </p>
+                    <p class="discovery-value">{{$discoveryPercent}}%</p>
+                    <div style="flex-weight: 1;"></div>
+                    <p class="discovery-label">{{$discoveredPOIs}}/{{$totalPOIs}} POIs</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Points of Interest -->
+        <div class="poi-section">
+            <div class="poi-header">
+                <p class="poi-title">Points of Interest</p>
+            </div>
+            
+            <div class="poi-list">
+                {{#each $pointsOfInterest}}
+                <div class="poi-item{{#unless $discovered}} undiscovered{{/unless}}" id="poi-{{$id}}">
+                    <p class="poi-icon-small{{#unless $discovered}} undiscovered{{/unless}}">{{$icon}}</p>
+                    <p class="poi-name{{#unless $discovered}} undiscovered{{/unless}}">
+                        {{#if $discovered}}{{$name}}{{else}}???{{/if}}
+                    </p>
+                    {{#if $discovered}}
+                    <p class="poi-discovered-badge">✓</p>
+                    {{/if}}
+                </div>
+                {{/each}}
+            </div>
+        </div>
+        
+        <!-- Travel Actions -->
+        <div class="travel-actions">
+            {{#if $canFastTravel}}
+            <button class="travel-btn" id="btn-fast-travel">Fast Travel</button>
+            <p class="travel-cost">Cost: {{$travelCost}} gold</p>
+            {{else}}
+            <button class="travel-btn disabled" disabled>Fast Travel</button>
+            <p class="travel-cost">{{$travelBlockReason}}</p>
+            {{/if}}
+        </div>
+        
+    </div>
+    
+</div>

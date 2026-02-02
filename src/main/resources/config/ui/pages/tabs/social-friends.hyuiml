@@ -1,0 +1,417 @@
+<!--
+    Social Friends Sub-Page
+    Reference: VDD-MISC-027-social-002-social-panel.md
+    
+    Parent Tab: Social
+    Features: Friends list, party management, online status
+-->
+
+<style>
+.friends-page {
+    layout-mode: Left;
+    flex-weight: 1;
+}
+
+/* Friends List Panel */
+.friends-panel {
+    layout-mode: Top;
+    flex-weight: 1;
+}
+
+.friends-header {
+    layout-mode: Left;
+    anchor-height: 40;
+    background-color: #252015;
+    vertical-align: center;
+}
+
+.friends-title {
+    color: #d4af37;
+    font-size: 14;
+    font-weight: bold;
+}
+
+.friends-toolbar {
+    layout-mode: Left;
+    anchor-height: 36;
+    background-color: #1e1812;
+    vertical-align: center;
+}
+
+.search-input {
+    anchor-width: 200; anchor-height: 28;
+    background-color: #2a2520;
+    color: #ccc;
+    font-size: 12;
+}
+
+.add-friend-btn {
+    anchor-height: 28;
+    background-color: #3a5a40;
+    color: #9ddb9d;
+    font-size: 11;
+}
+
+/* Section Headers */
+.section-header {
+    layout-mode: Left;
+    anchor-height: 28;
+    background-color: #252015;
+    vertical-align: center;
+}
+
+.section-title {
+    color: #888;
+    font-size: 11;
+    text-transform: uppercase;
+}
+
+.section-count {
+    color: #666;
+    font-size: 10;
+}
+
+/* Friend Entry */
+.friends-list {
+    layout-mode: Top;
+    flex-weight: 1;
+    background-color: #1a1510;
+}
+
+.friend-entry {
+    layout-mode: Left;
+    anchor-height: 48;
+    background-color: transparent;
+    vertical-align: center;
+}
+
+.friend-entry.selected {
+    background-color: rgba(212, 175, 55, 0.1);
+}
+
+.status-indicator {
+    anchor-width: 8; anchor-height: 8;
+    background-color: #666;
+}
+
+.status-indicator.online {
+    background-color: #5a9d5a;
+}
+
+.status-indicator.away {
+    background-color: #9d9d5a;
+}
+
+.status-indicator.busy {
+    background-color: #9d5a5a;
+}
+
+.friend-avatar {
+    anchor-width: 36; anchor-height: 36;
+    background-color: #333;
+}
+
+.friend-info {
+    layout-mode: Top;
+    flex-weight: 1;
+}
+
+.friend-name {
+    color: #ccc;
+    font-size: 13;
+}
+
+.friend-name.online {
+    color: #9ddb9d;
+}
+
+.friend-details {
+    color: #888;
+    font-size: 10;
+}
+
+.friend-actions {
+    layout-mode: Left;
+}
+
+.action-btn {
+    anchor-width: 28; anchor-height: 28;
+    background-color: transparent;
+    color: #888;
+    font-size: 14;
+}
+
+.action-btn.whisper {
+    color: #9d9ddb;
+}
+
+.action-btn.invite {
+    color: #9ddb9d;
+}
+
+/* Party Panel */
+.party-panel {
+    layout-mode: Top;
+    anchor-width: 280;
+    background-color: #1e1812;
+}
+
+.party-header {
+    layout-mode: Left;
+    anchor-height: 40;
+    background-color: #252015;
+    vertical-align: center;
+}
+
+.party-title {
+    color: #d4af37;
+    font-size: 14;
+    font-weight: bold;
+}
+
+.party-size {
+    color: #888;
+    font-size: 11;
+}
+
+.party-members {
+    layout-mode: Top;
+    flex-weight: 1;
+}
+
+.party-member {
+    layout-mode: Left;
+    anchor-height: 56;
+    background-color: #1a1510;
+    vertical-align: center;
+}
+
+.party-member.leader {
+    background-color: rgba(212, 175, 55, 0.1);
+}
+
+.leader-icon {
+    font-size: 12;
+    color: #d4af37;
+}
+
+.member-avatar {
+    anchor-width: 40; anchor-height: 40;
+    background-color: #333;
+}
+
+.member-info {
+    layout-mode: Top;
+    flex-weight: 1;
+}
+
+.member-name {
+    color: #ccc;
+    font-size: 12;
+}
+
+.member-class {
+    color: #888;
+    font-size: 10;
+}
+
+.member-bars {
+    layout-mode: Top;
+    anchor-width: 80;
+}
+
+.health-bar {
+    anchor-width: 80; anchor-height: 6;
+    background-color: #333;
+}
+
+.health-bar-fill {
+    anchor-height: 6;
+    background-color: #5a9d5a;
+}
+
+.mana-bar {
+    anchor-width: 80; anchor-height: 4;
+    background-color: #333;
+}
+
+.mana-bar-fill {
+    anchor-height: 4;
+    background-color: #5a5a9d;
+}
+
+.member-actions-btn {
+    anchor-width: 24; anchor-height: 24;
+    background-color: transparent;
+    color: #888;
+    font-size: 12;
+}
+
+/* Empty Slots */
+.empty-slot {
+    layout-mode: Left;
+    anchor-height: 48;
+    background-color: #1a1510;
+    horizontal-align: center;
+    vertical-align: center;
+}
+
+.empty-slot-btn {
+    anchor-height: 32;
+    background-color: #2a2520;
+    color: #888;
+    font-size: 11;
+}
+
+/* Party Actions */
+.party-actions {
+    layout-mode: Left;
+    anchor-height: 40;
+    background-color: #252015;
+    horizontal-align: center;
+    vertical-align: center;
+}
+
+.party-btn {
+    anchor-height: 28;
+    background-color: #3a3530;
+    color: #ccc;
+    font-size: 11;
+}
+
+.party-btn.leave {
+    background-color: #5a3030;
+    color: #db9d9d;
+}
+</style>
+
+<div class="friends-page">
+    
+    <!-- Left: Friends List -->
+    <div class="friends-panel">
+        
+        <div class="friends-header">
+            <p class="friends-title">FRIENDS</p>
+        </div>
+        
+        <div class="friends-toolbar">
+            <input id="friend-search" class="search-input" placeholder="Search friends..." />
+            <div style="flex-weight: 1;"></div>
+            <button id="btn-add-friend" class="add-friend-btn">+ Add Friend</button>
+        </div>
+        
+        <!-- Online Section -->
+        <div class="section-header">
+            <p class="section-title">ONLINE</p>
+            <p class="section-count">({{$onlineCount}})</p>
+        </div>
+        
+        <div class="friends-list">
+            {{#each $onlineFriends}}
+            <div class="friend-entry" id="friend-{{$id}}" data-friend-id="{{$id}}">
+                <div class="status-indicator {{$status}}"></div>
+                <div class="friend-avatar">
+                    <p>{{$avatarIcon}}</p>
+                </div>
+                <div class="friend-info">
+                    <p class="friend-name online">{{$name}}</p>
+                    <p class="friend-details">Lvl {{$level}} {{$race}} | {{$location}}</p>
+                </div>
+                <div class="friend-actions">
+                    <button class="action-btn whisper" id="whisper-{{$id}}">✉️</button>
+                    <button class="action-btn invite" id="invite-{{$id}}">⚔️</button>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+        
+        <!-- Offline Section -->
+        <div class="section-header">
+            <p class="section-title">OFFLINE</p>
+            <p class="section-count">({{$offlineCount}})</p>
+        </div>
+        
+        <div class="friends-list">
+            {{#each $offlineFriends}}
+            <div class="friend-entry" id="friend-{{$id}}" data-friend-id="{{$id}}">
+                <div class="status-indicator"></div>
+                <div class="friend-avatar">
+                    <p>{{$avatarIcon}}</p>
+                </div>
+                <div class="friend-info">
+                    <p class="friend-name">{{$name}}</p>
+                    <p class="friend-details">Lvl {{$level}} {{$race}} | Last: {{$lastOnline}}</p>
+                </div>
+                <div class="friend-actions">
+                    <button class="action-btn whisper" id="whisper-{{$id}}">✉️</button>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+        
+    </div>
+    
+    <!-- Right: Party Panel -->
+    <div class="party-panel">
+        
+        <div class="party-header">
+            <p class="party-title">PARTY</p>
+            <div style="flex-weight: 1;"></div>
+            <p class="party-size">{{$partySize}}/{{$partyMax}}</p>
+        </div>
+        
+        {{#if $inParty}}
+        <div class="party-members">
+            {{#each $partyMembers}}
+            <div class="party-member{{#if $isLeader}} leader{{/if}}" id="party-{{$id}}">
+                {{#if $isLeader}}
+                <p class="leader-icon">★</p>
+                {{/if}}
+                <div class="member-avatar">
+                    <p>{{$avatarIcon}}</p>
+                </div>
+                <div class="member-info">
+                    <p class="member-name">{{$name}}</p>
+                    <p class="member-class">{{$class}} ({{$role}})</p>
+                </div>
+                <div class="member-bars">
+                    <div class="health-bar">
+                        <div class="health-bar-fill" style="anchor-width: {{$healthPercent}}%;"></div>
+                    </div>
+                    <div class="mana-bar">
+                        <div class="mana-bar-fill" style="anchor-width: {{$manaPercent}}%;"></div>
+                    </div>
+                </div>
+                {{#if $canKick}}
+                <button class="member-actions-btn" id="kick-{{$id}}">✕</button>
+                {{/if}}
+            </div>
+            {{/each}}
+            
+            <!-- Empty Slots -->
+            {{#each $emptySlots}}
+            <div class="empty-slot">
+                <button class="empty-slot-btn" id="invite-slot-{{$index}}">+ Invite</button>
+            </div>
+            {{/each}}
+        </div>
+        
+        <div class="party-actions">
+            {{#if $isLeader}}
+            <button class="party-btn" id="btn-ready-check">Ready Check</button>
+            <button class="party-btn" id="btn-convert-raid">Convert to Raid</button>
+            {{/if}}
+            <button class="party-btn leave" id="btn-leave-party">Leave</button>
+        </div>
+        {{else}}
+        <div class="empty-slot" style="flex-weight: 1;">
+            <p style="color: #666; font-size: 12;">You are not in a party</p>
+        </div>
+        <div class="party-actions">
+            <button class="party-btn" id="btn-create-party">Create Party</button>
+        </div>
+        {{/if}}
+        
+    </div>
+    
+</div>

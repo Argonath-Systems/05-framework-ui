@@ -1,0 +1,255 @@
+<!--
+    Main Character Panel
+    Reference: VDD-LAYOUT-003-main-character-panel.md
+    
+    Trigger: C key, or ESC → Character, or direct keybinds (I, J, O, U, M, K, G)
+    Dimensions: 900x700 (centered)
+    
+    8 Tabs with dropdowns:
+    - Inventory (I): Equipment, Bags, Currency, Cosmetics
+    - Quest (J): Quest Book, Quest Designer
+    - Social (O): Friends & Party, Guild, Housing
+    - Faction (U): Reputation, War Overview
+    - Map (M): World Map, Zone Map, Discovered
+    - Work (K): Professions, Recipes, Gathering Log
+    - Dungeon (Shift+I): Group Finder, Dungeon Journal, Raid Planner
+    - More: Achievements, Mounts, Pets, Titles, Collections, PvP
+-->
+
+<style>
+.page-overlay {
+    layout-mode: MiddleCenter;
+    anchor-left: 0; anchor-right: 0;
+    anchor-top: 0; anchor-bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.main-character-panel {
+    layout-mode: Top;
+    anchor-width: 900; anchor-height: 700;
+    background-color: #1a1510;
+    background-image: url(textures/ui/panel-bg-dark.png);
+}
+
+/* Header */
+.panel-header {
+    layout-mode: Left;
+    anchor-height: 48;
+    background-color: #2a2015;
+    vertical-align: center;
+}
+
+.panel-title {
+    color: #d4af37;
+    font-size: 18;
+    font-weight: bold;
+    horizontal-align: left;
+}
+
+.panel-close-btn {
+    anchor-width: 36; anchor-height: 36;
+    background-color: transparent;
+    color: #ccc;
+    font-size: 24;
+    horizontal-align: center;
+    vertical-align: center;
+}
+
+/* Tab Bar */
+.panel-tabs {
+    layout-mode: Left;
+    anchor-height: 44;
+    background-color: #252015;
+}
+
+.tab-btn {
+    layout-mode: Top;
+    flex-weight: 1;
+    anchor-height: 44;
+    background-color: transparent;
+    vertical-align: center;
+    horizontal-align: center;
+}
+
+.tab-btn.active {
+    background-color: rgba(212, 175, 55, 0.15);
+}
+
+.tab-icon {
+    font-size: 16;
+    color: #aaa;
+    horizontal-align: center;
+}
+
+.tab-btn.active .tab-icon {
+    color: #d4af37;
+}
+
+.tab-label {
+    font-size: 11;
+    color: #888;
+    horizontal-align: center;
+}
+
+.tab-btn.active .tab-label {
+    color: #d4af37;
+    font-weight: bold;
+}
+
+.tab-dropdown-arrow {
+    font-size: 8;
+    color: #666;
+    horizontal-align: center;
+}
+
+/* Sub-Navigation */
+.sub-navigation {
+    layout-mode: Left;
+    anchor-height: 36;
+    background-color: #1e1812;
+}
+
+.subpage-btn {
+    layout-mode: Left;
+    anchor-height: 36;
+    background-color: transparent;
+    vertical-align: center;
+}
+
+.subpage-btn.active {
+    background-color: rgba(212, 175, 55, 0.2);
+}
+
+.subpage-icon {
+    font-size: 14;
+    color: #999;
+}
+
+.subpage-btn.active .subpage-icon {
+    color: #d4af37;
+}
+
+.subpage-label {
+    font-size: 12;
+    color: #aaa;
+}
+
+.subpage-btn.active .subpage-label {
+    color: #d4af37;
+}
+
+.badge {
+    font-size: 10;
+    color: #fff;
+    background-color: #c44;
+}
+
+/* Content Area */
+.panel-content {
+    layout-mode: Top;
+    flex-weight: 1;
+    background-color: #1a1510;
+}
+
+/* Placeholder styles */
+.subpage-placeholder {
+    layout-mode: Top;
+    flex-weight: 1;
+    horizontal-align: center;
+    vertical-align: center;
+}
+
+.placeholder-icon {
+    font-size: 48;
+    color: #444;
+    horizontal-align: center;
+}
+
+.placeholder-title {
+    font-size: 20;
+    color: #666;
+    horizontal-align: center;
+}
+
+.placeholder-message {
+    font-size: 14;
+    color: #555;
+    horizontal-align: center;
+}
+</style>
+
+<div class="page-overlay">
+    <div class="main-character-panel">
+        
+        <!-- Header -->
+        <div class="panel-header">
+            <p class="panel-title">CHARACTER PANEL</p>
+            <div style="flex-weight: 1;"></div>
+            <button id="btn-close" class="panel-close-btn">×</button>
+        </div>
+        
+        <!-- Tab Bar (8 tabs) -->
+        <nav class="panel-tabs">
+            
+            <button id="tab-inventory" class="tab-btn{{#if $isInventoryActive}} active{{/if}}" data-tab="inventory">
+                <p class="tab-icon">📦</p>
+                <p class="tab-label">Inventory</p>
+                <p class="tab-dropdown-arrow">▼</p>
+            </button>
+            
+            <button id="tab-quest" class="tab-btn{{#if $isQuestActive}} active{{/if}}" data-tab="quest">
+                <p class="tab-icon">📜</p>
+                <p class="tab-label">Quest</p>
+                <p class="tab-dropdown-arrow">▼</p>
+            </button>
+            
+            <button id="tab-social" class="tab-btn{{#if $isSocialActive}} active{{/if}}" data-tab="social">
+                <p class="tab-icon">👥</p>
+                <p class="tab-label">Social</p>
+                <p class="tab-dropdown-arrow">▼</p>
+            </button>
+            
+            <button id="tab-faction" class="tab-btn{{#if $isFactionActive}} active{{/if}}" data-tab="faction">
+                <p class="tab-icon">⚔️</p>
+                <p class="tab-label">Faction</p>
+                <p class="tab-dropdown-arrow">▼</p>
+            </button>
+            
+            <button id="tab-map" class="tab-btn{{#if $isMapActive}} active{{/if}}" data-tab="map">
+                <p class="tab-icon">🗺️</p>
+                <p class="tab-label">Map</p>
+                <p class="tab-dropdown-arrow">▼</p>
+            </button>
+            
+            <button id="tab-work" class="tab-btn{{#if $isWorkActive}} active{{/if}}" data-tab="work">
+                <p class="tab-icon">⚒️</p>
+                <p class="tab-label">Work</p>
+                <p class="tab-dropdown-arrow">▼</p>
+            </button>
+            
+            <button id="tab-dungeon" class="tab-btn{{#if $isDungeonActive}} active{{/if}}" data-tab="dungeon">
+                <p class="tab-icon">🏰</p>
+                <p class="tab-label">Dungeon</p>
+                <p class="tab-dropdown-arrow">▼</p>
+            </button>
+            
+            <button id="tab-more" class="tab-btn{{#if $isMoreActive}} active{{/if}}" data-tab="more">
+                <p class="tab-icon">🏆</p>
+                <p class="tab-label">More</p>
+                <p class="tab-dropdown-arrow">▼</p>
+            </button>
+            
+        </nav>
+        
+        <!-- Sub-Navigation (populated based on active tab) -->
+        <div class="sub-navigation">
+            {{$subNavigation}}
+        </div>
+        
+        <!-- Content Area -->
+        <div class="panel-content">
+            {{$subPageContent}}
+        </div>
+        
+    </div>
+</div>

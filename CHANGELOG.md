@@ -7,6 +7,78 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-02-01
+
+### Added - Main Character Panel System (VDD-LAYOUT-003)
+
+This major release implements the unified Main Character Panel system replacing the previous 16-tab architecture with an 8-tab + dropdown sub-page design per VDD-LAYOUT-003.
+
+- **Menu Package Additions** (`com.argonathsystems.framework.ui.menu`):
+  - `MainPanelTab.java`: 8-tab enum (INVENTORY, QUEST, SOCIAL, FACTION, MAP, WORK, DUNGEON, MORE)
+    - Hotkey mappings (I, J, O, etc.)
+    - Sub-page list getters and default sub-page resolution
+  - `SubPage.java`: 25+ sub-page enum with parent tab references
+    - EQUIPMENT, BAGS, CURRENCY, COSMETICS (Inventory tab)
+    - QUEST_BOOK, QUEST_DESIGNER (Quest tab)
+    - FRIENDS, GUILD, HOUSING (Social tab)
+    - REPUTATION, WAR_OVERVIEW (Faction tab)
+    - WORLD_MAP, ZONE_MAP, DISCOVERED (Map tab)
+    - PROFESSIONS, RECIPES, GATHERING_LOG (Work tab)
+    - GROUP_FINDER, DUNGEON_JOURNAL, RAID_PLANNER (Dungeon tab)
+    - ACHIEVEMENTS, MOUNTS, PETS, TITLES, COLLECTIONS, PVP (More tab)
+  - `SubPageHandler.java`: Interface for mods to provide sub-page content
+    - `generateContent(UUID, Map)`, `handleEvent()`, `getBadgeCount()`
+  - `MainCharacterPanelManager.java`: Central panel manager with handler registry
+    - Keyboard shortcut handling
+    - Sub-page navigation and state tracking
+    - Hot-reloading support
+  - `MainCharacterPanelBuilder.java`: HTML builder for the 900x700 panel
+  - `MainMenuPaneBuilder.java`: ESC menu builder per VDD-MISC-021
+
+- **Menu Data Models** (`com.argonathsystems.framework.ui.menu.model`):
+  - `EquipmentSlotData.java`: Equipment slot with quality tiers, durability, enchants
+  - `FriendEntry.java`: Friends list entry with online status, level, location
+  - `PartyMemberData.java`: Party member with health/mana bars, combat role
+  - `GuildMemberRow.java`: Guild roster row with rank tiers, contribution
+  - `MapMarkerData.java`: Map markers and waypoints with tracking
+  - `GroupListingData.java`: LFG group listing with role slots
+  - `DungeonEntry.java`: Dungeon selection for group finder
+  - `InventorySlotData.java`: Bag inventory slot with stacking
+
+- **HYUIML Templates** (`src/main/resources/config/ui/pages`):
+  - `main-menu-pane.hyuiml`: 400x500 ESC menu (Resume, Character, Social, Settings, Quit)
+  - `main-character-panel.hyuiml`: 900x700 8-tab panel with sub-navigation
+  - `tabs/inventory-equipment.hyuiml`: 12-slot equipment grid + bags
+  - `tabs/social-friends.hyuiml`: Friends list + party panel
+  - `tabs/guild-management.hyuiml`: Guild roster + treasury + events
+  - `tabs/map-world.hyuiml`: Zoomable map + waypoints + region info
+  - `tabs/dungeon-group-finder.hyuiml`: Role selection + dungeon queue + LFG listings
+
+- **Adapter Layer** (`02-adapter-hytale/.../ui`):
+  - `MainMenuPaneAdapter.java`: ESC menu rendering with button callbacks
+  - `MainCharacterPanelAdapter.java`: Panel rendering with tab/sub-page navigation
+  - `CharacterPanelInputHandler.java`: Keyboard hotkey handler (I, J, G, M, K, L, etc.)
+
+### Changed
+
+- **Architecture**: Replaced 16-tab `MenuTab` enum with 8-tab `MainPanelTab` + `SubPage` design
+- **Hotkeys**: Unified hotkey system - G opens Social→Guild, not a separate Guild tab
+
+### Deprecated
+
+- `MenuTab.java`: Deprecated in favor of `MainPanelTab` + `SubPage` architecture
+
+### Specification References
+
+- VDD-LAYOUT-003: Main Character Panel (8-tab design)
+- VDD-MISC-021: Main Menu Pane (ESC menu)
+- VDD-MISC-015: Inventory Panel
+- VDD-MISC-027: Social Panel
+- VDD-MISC-026: Guild Management
+- VDD-MISC-017: Group Finder
+
+---
+
 ### Added - NPC/Quest Animation Implementation (Phase 6)
 
 - **Cinematic Package** (`com.argonathsystems.framework.ui.cinematic`):

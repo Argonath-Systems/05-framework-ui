@@ -1,0 +1,379 @@
+<!--
+    Inventory Equipment Sub-Page
+    Reference: VDD-MISC-015-character-003-inventory-equipment.md
+    
+    Parent Tab: Inventory
+    Dimensions: Full panel content area
+-->
+
+<style>
+.equipment-page {
+    layout-mode: Left;
+    flex-weight: 1;
+}
+
+/* Equipment Panel (Left Side) */
+.equipment-panel {
+    layout-mode: Top;
+    anchor-width: 280;
+    background-color: #1e1812;
+}
+
+.equipment-header {
+    layout-mode: Left;
+    anchor-height: 36;
+    background-color: #252015;
+    vertical-align: center;
+}
+
+.equipment-title {
+    color: #d4af37;
+    font-size: 14;
+    font-weight: bold;
+}
+
+.equipment-grid {
+    layout-mode: Top;
+    flex-weight: 1;
+}
+
+.equipment-row {
+    layout-mode: Left;
+    anchor-height: 52;
+    horizontal-align: center;
+}
+
+.equipment-slot {
+    layout-mode: Top;
+    anchor-width: 48; anchor-height: 48;
+    background-color: #2a2520;
+    horizontal-align: center;
+    vertical-align: center;
+}
+
+.equipment-slot.equipped {
+    background-color: #3a3530;
+}
+
+.slot-icon {
+    font-size: 24;
+    color: #555;
+}
+
+.equipment-slot.equipped .slot-icon {
+    color: #d4af37;
+}
+
+.slot-label {
+    font-size: 8;
+    color: #666;
+    horizontal-align: center;
+}
+
+/* Stats Panel */
+.stats-panel {
+    layout-mode: Top;
+    anchor-width: 180;
+    background-color: #1a1510;
+}
+
+.stats-header {
+    layout-mode: Left;
+    anchor-height: 32;
+    background-color: #252015;
+    vertical-align: center;
+}
+
+.stats-title {
+    color: #aaa;
+    font-size: 12;
+    font-weight: bold;
+}
+
+.stat-row {
+    layout-mode: Left;
+    anchor-height: 24;
+}
+
+.stat-label {
+    color: #888;
+    font-size: 11;
+    flex-weight: 1;
+}
+
+.stat-value {
+    color: #9ddb9d;
+    font-size: 11;
+    font-weight: bold;
+}
+
+/* Currency Display */
+.currency-panel {
+    layout-mode: Left;
+    anchor-height: 40;
+    background-color: #252015;
+    horizontal-align: center;
+    vertical-align: center;
+}
+
+.currency-item {
+    layout-mode: Left;
+    vertical-align: center;
+}
+
+.currency-icon {
+    font-size: 14;
+}
+
+.currency-value {
+    color: #d4af37;
+    font-size: 12;
+}
+
+/* Bags Panel (Right Side) */
+.bags-panel {
+    layout-mode: Top;
+    flex-weight: 1;
+    background-color: #1a1510;
+}
+
+.bags-header {
+    layout-mode: Left;
+    anchor-height: 36;
+    background-color: #252015;
+    vertical-align: center;
+}
+
+.bags-title {
+    color: #d4af37;
+    font-size: 14;
+    font-weight: bold;
+}
+
+.bags-info {
+    color: #888;
+    font-size: 11;
+}
+
+.bag-grid {
+    layout-mode: Left;
+    flex-weight: 1;
+}
+
+.bag-slot {
+    layout-mode: Top;
+    anchor-width: 40; anchor-height: 40;
+    background-color: #2a2520;
+    horizontal-align: center;
+    vertical-align: center;
+}
+
+.bag-slot.has-item {
+    background-color: #3a3530;
+}
+
+.bag-item-icon {
+    font-size: 20;
+    color: #aaa;
+}
+
+.bag-item-count {
+    font-size: 9;
+    color: #fff;
+    horizontal-align: right;
+    vertical-align: bottom;
+}
+
+/* Weight Bar */
+.weight-bar-container {
+    layout-mode: Left;
+    anchor-height: 24;
+    background-color: #252015;
+    vertical-align: center;
+}
+
+.weight-label {
+    color: #888;
+    font-size: 11;
+}
+
+.weight-bar {
+    layout-mode: Left;
+    anchor-width: 120; anchor-height: 8;
+    background-color: #333;
+}
+
+.weight-bar-fill {
+    anchor-height: 8;
+    background-color: #5a9d5a;
+}
+
+.weight-text {
+    color: #aaa;
+    font-size: 10;
+}
+
+/* Footer Actions */
+.equipment-footer {
+    layout-mode: Left;
+    anchor-height: 40;
+    background-color: #252015;
+    horizontal-align: center;
+    vertical-align: center;
+}
+
+.footer-btn {
+    anchor-height: 28;
+    background-color: #3a3530;
+    color: #ccc;
+    font-size: 11;
+}
+</style>
+
+<div class="equipment-page">
+    
+    <!-- Left: Equipment + Stats -->
+    <div class="equipment-panel">
+        
+        <div class="equipment-header">
+            <p class="equipment-title">EQUIPMENT</p>
+        </div>
+        
+        <!-- Equipment Grid (3x4 layout) -->
+        <div class="equipment-grid">
+            
+            <div class="equipment-row">
+                <div class="equipment-slot{{#if $slots.head}} equipped{{/if}}" id="slot-head" data-slot="head">
+                    <p class="slot-icon">{{#if $slots.head}}{{$slots.head.icon}}{{else}}🎩{{/if}}</p>
+                    <p class="slot-label">Head</p>
+                </div>
+                <div class="equipment-slot{{#if $slots.neck}} equipped{{/if}}" id="slot-neck" data-slot="neck">
+                    <p class="slot-icon">{{#if $slots.neck}}{{$slots.neck.icon}}{{else}}📿{{/if}}</p>
+                    <p class="slot-label">Neck</p>
+                </div>
+                <div class="equipment-slot{{#if $slots.back}} equipped{{/if}}" id="slot-back" data-slot="back">
+                    <p class="slot-icon">{{#if $slots.back}}{{$slots.back.icon}}{{else}}🧥{{/if}}</p>
+                    <p class="slot-label">Back</p>
+                </div>
+            </div>
+            
+            <div class="equipment-row">
+                <div class="equipment-slot{{#if $slots.chest}} equipped{{/if}}" id="slot-chest" data-slot="chest">
+                    <p class="slot-icon">{{#if $slots.chest}}{{$slots.chest.icon}}{{else}}👕{{/if}}</p>
+                    <p class="slot-label">Chest</p>
+                </div>
+                <div class="equipment-slot{{#if $slots.hands}} equipped{{/if}}" id="slot-hands" data-slot="hands">
+                    <p class="slot-icon">{{#if $slots.hands}}{{$slots.hands.icon}}{{else}}🧤{{/if}}</p>
+                    <p class="slot-label">Hands</p>
+                </div>
+                <div class="equipment-slot{{#if $slots.ring1}} equipped{{/if}}" id="slot-ring1" data-slot="ring1">
+                    <p class="slot-icon">{{#if $slots.ring1}}{{$slots.ring1.icon}}{{else}}💍{{/if}}</p>
+                    <p class="slot-label">Ring</p>
+                </div>
+            </div>
+            
+            <div class="equipment-row">
+                <div class="equipment-slot{{#if $slots.legs}} equipped{{/if}}" id="slot-legs" data-slot="legs">
+                    <p class="slot-icon">{{#if $slots.legs}}{{$slots.legs.icon}}{{else}}👖{{/if}}</p>
+                    <p class="slot-label">Legs</p>
+                </div>
+                <div class="equipment-slot{{#if $slots.feet}} equipped{{/if}}" id="slot-feet" data-slot="feet">
+                    <p class="slot-icon">{{#if $slots.feet}}{{$slots.feet.icon}}{{else}}👢{{/if}}</p>
+                    <p class="slot-label">Feet</p>
+                </div>
+                <div class="equipment-slot{{#if $slots.ring2}} equipped{{/if}}" id="slot-ring2" data-slot="ring2">
+                    <p class="slot-icon">{{#if $slots.ring2}}{{$slots.ring2.icon}}{{else}}💍{{/if}}</p>
+                    <p class="slot-label">Ring</p>
+                </div>
+            </div>
+            
+            <div class="equipment-row">
+                <div class="equipment-slot{{#if $slots.mainHand}} equipped{{/if}}" id="slot-main" data-slot="mainHand">
+                    <p class="slot-icon">{{#if $slots.mainHand}}{{$slots.mainHand.icon}}{{else}}⚔️{{/if}}</p>
+                    <p class="slot-label">Main</p>
+                </div>
+                <div class="equipment-slot{{#if $slots.offHand}} equipped{{/if}}" id="slot-off" data-slot="offHand">
+                    <p class="slot-icon">{{#if $slots.offHand}}{{$slots.offHand.icon}}{{else}}🛡️{{/if}}</p>
+                    <p class="slot-label">Off</p>
+                </div>
+                <div class="equipment-slot{{#if $slots.belt}} equipped{{/if}}" id="slot-belt" data-slot="belt">
+                    <p class="slot-icon">{{#if $slots.belt}}{{$slots.belt.icon}}{{else}}🎗️{{/if}}</p>
+                    <p class="slot-label">Belt</p>
+                </div>
+            </div>
+            
+        </div>
+        
+        <!-- Currency Display -->
+        <div class="currency-panel">
+            <div class="currency-item">
+                <p class="currency-icon">🪙</p>
+                <p class="currency-value">{{$currency.gold}}</p>
+            </div>
+            <div class="currency-item">
+                <p class="currency-icon">🥈</p>
+                <p class="currency-value">{{$currency.silver}}</p>
+            </div>
+            <div class="currency-item">
+                <p class="currency-icon">🥉</p>
+                <p class="currency-value">{{$currency.copper}}</p>
+            </div>
+        </div>
+        
+        <!-- Stats Panel -->
+        <div class="stats-panel">
+            <div class="stats-header">
+                <p class="stats-title">CHARACTER STATS</p>
+            </div>
+            {{#each $stats}}
+            <div class="stat-row">
+                <p class="stat-label">{{$name}}</p>
+                <p class="stat-value">{{$value}}</p>
+            </div>
+            {{/each}}
+        </div>
+        
+    </div>
+    
+    <!-- Right: Bags -->
+    <div class="bags-panel">
+        
+        <div class="bags-header">
+            <p class="bags-title">BACKPACK</p>
+            <div style="flex-weight: 1;"></div>
+            <p class="bags-info">{{$usedSlots}}/{{$totalSlots}} slots</p>
+        </div>
+        
+        <!-- Bag Grid -->
+        <div class="bag-grid">
+            {{#each $bagItems}}
+            <div class="bag-slot{{#if $hasItem}} has-item{{/if}}" id="bag-{{$index}}" data-slot="{{$index}}">
+                {{#if $hasItem}}
+                <p class="bag-item-icon">{{$icon}}</p>
+                {{#if $count > 1}}
+                <p class="bag-item-count">{{$count}}</p>
+                {{/if}}
+                {{/if}}
+            </div>
+            {{/each}}
+        </div>
+        
+        <!-- Weight Bar -->
+        <div class="weight-bar-container">
+            <p class="weight-label">Weight:</p>
+            <div class="weight-bar">
+                <div class="weight-bar-fill" style="anchor-width: {{$weightPercent}}%;"></div>
+            </div>
+            <p class="weight-text">{{$currentWeight}}/{{$maxWeight}}</p>
+        </div>
+        
+    </div>
+    
+</div>
+
+<!-- Footer -->
+<div class="equipment-footer">
+    <button id="btn-sort" class="footer-btn">Sort</button>
+    <button id="btn-sell-junk" class="footer-btn">Sell Junk</button>
+    <button id="btn-bank" class="footer-btn">Bank</button>
+</div>

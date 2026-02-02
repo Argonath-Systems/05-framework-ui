@@ -328,12 +328,12 @@ public class MainMenuManager {
     private String getMenuStyles() {
         return """
             .menu-overlay {
-                layout-mode: Overlay;
+                layout-mode: MiddleCenter;
                 anchor-left: 0; anchor-right: 0;
                 anchor-top: 0; anchor-bottom: 0;
             }
             .menu-backdrop {
-                layout-mode: Overlay;
+                layout-mode: Full;
                 anchor-left: 0; anchor-right: 0;
                 anchor-top: 0; anchor-bottom: 0;
                 background-color: rgba(0, 0, 0, 0.7);
